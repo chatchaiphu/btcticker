@@ -23,8 +23,13 @@ fontdir = os.path.join(os.path.dirname( os.path.realpath(__file__)), 'fonts/goog
 configfile = os.path.join(os.path.dirname( os.path.realpath(__file__)), 'config.yaml')
 fonthiddenprice = ImageFont.truetype( os.path.join(fontdir, 'Roboto-Medium.ttf'), 30)
 font = ImageFont.truetype(os.path.join(fontdir, 'Roboto-Medium.ttf'), 40)
-fontHorizontal = ImageFont.truetype( os.path.join(fontdir, 'Roboto-Medium.ttf'), 28)
+fontHorizontal = ImageFont.truetype( os.path.join(fontdir, 'Roboto-Medium.ttf'), 29)
 font_date = ImageFont.truetype(os.path.join( fontdir, 'PixelSplitter-Bold.ttf'), 12)
+headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
+fontdir2 = os.path.join(os.path.dirname( os.path.realpath(__file__)), 'fonts')
+fontHorizontal = ImageFont.truetype( os.path.join(fontdir2, 'whitrabt.ttf'), 30)
+font_date = ImageFont.truetype(os.path.join( fontdir2, 'whitrabt.ttf'), 11)
 
 LAYOUT_ICON_W = 60
 LAYOUT_ICON_H = 60
@@ -94,9 +99,7 @@ def getData(config, whichcoin, fiat, other):
         # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
         alltimehigh = 1000000.0
     logging.info("Got Live Data From CoinGecko")
-    geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin + \
-        "/market_chart/range?vs_currency="+fiat+"&from=" + \
-        str(starttimeseconds)+"&to="+str(endtimeseconds)
+    geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
     logging.info(geckourlhistorical)
     rawtimeseries = requests.get(geckourlhistorical).json()
     logging.info("Got price for the last " +
@@ -238,7 +241,7 @@ def updateDisplay(config, pricestack, whichcoin, fiat, other):
         drawRed = ImageDraw.Draw(imageRed)
 
         if pricechg >= 0:
-            image.paste(sparkbitmap, (30, 10))
+            imageRed.paste(sparkbitmap, (30, 10))
         else:
             imageRed.paste(sparkbitmap, (30, 10))
 
@@ -263,17 +266,19 @@ def updateDisplay(config, pricestack, whichcoin, fiat, other):
         draw.text((a+(b-w)/2, 60), str(days_ago)+" day : " + pricechange, font=font_date, fill=0)
 
         ####
-        #draw.text((70,75), symbolstring+pricenowstring, font=fontHorizontal, fill=0)
+        a = layout_w*1/5
+        b = layout_w*4/5
+        w, h = draw.textsize("24h vol : " + human_format(other['volume']), font=font_date)
+        draw.text((a+(b-w)/2, 70), "24h vol : " + human_format(other['volume']), font=font_date, fill=0)
 
         ####
         a = layout_w*1/5
         b = layout_w*4/5
         w, h = draw.textsize(symbolstring+pricenowstring, font=fontHorizontal)
-        draw.text((a+(b-w)/2, 75), symbolstring + pricenowstring, font=fontHorizontal, fill=0)
+        #draw.text((a+(b-w)/2, 75), symbolstring + pricenowstring, font=fontHorizontal, fill=0)
+        draw.text((a+(b-w)/2, 80), symbolstring + pricenowstring, font=fontHorizontal, fill=0)
         #draw.text((a,75), symbolstring+pricenowstring, font=fontHorizontal, fill=0)
 
-        ####
-        #draw.text((105,95), "24h vol : " + human_format(other['volume']), font=font_date, fill=0)
 
         if other['ATH'] == True:
             image.paste(ATHbitmap, (190, 85))
@@ -303,10 +308,25 @@ def currencystringtolist(currstring):
     return curr_list
 
 
-def currencycycle(curr_list):
+def currencycycle(curr_string):
+    curr_list=currencystringtolist(curr_string)
     # Rotate the array of currencies from config.... [a b c] becomes [b c a]
     curr_list = curr_list[1:]+curr_list[:1]
     return curr_list
+
+def gettrending(config):
+    print("ADD TRENDING")
+    coinlist=config['ticker']['currency']
+    url="https://api.coingecko.com/api/v3/search/trending"
+#   Cycle must be true if trending mode is on
+    config['display']['cycle']=True
+    trendingcoins = requests.get(url, headers=headers).json()
+    for i in range(0,(len(trendingcoins['coins']))):
+        print(trendingcoins['coins'][i]['item']['id'])
+        coinlist+=","+str(trendingcoins['coins'][i]['item']['id'])
+    print("COIN TRENDING LIST : " + coinlist)
+    config['ticker']['currency']=coinlist
+    return config
 
 
 def main():
@@ -355,6 +375,7 @@ def main():
         config['display']['orientation'] = int(
             config['display']['orientation'])
 
+        staticcoins=config['ticker']['currency']
         crypto_list = currencystringtolist(config['ticker']['currency'])
         logging.info(crypto_list)
 
@@ -384,6 +405,14 @@ def main():
 #       Time of start
         lastcoinfetch = time.time()
 
+#       Note how many coins in original config file
+        howmanycoins=len(config['ticker']['currency'].split(","))
+#       Quick Sanity check on update frequency, waveshare says no faster than 180 seconds, but we'll make 60 the lower limit
+        if float(config['ticker']['updatefrequency'])<60:
+            logging.info("Throttling update frequency to 60 seconds")
+            updatefrequency=60.0
+        else:
+            updatefrequency=float(config['ticker']['updatefrequency'])
         while True:
 
             key1state = GPIO.input(key1)
@@ -412,14 +441,26 @@ def main():
                     FIAT = fiat_list[0]
                     logging.info(FIAT)
                     lastcoinfetch = fullupdate()
-                if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled == False):
-                    if config['display']['cycle'] == True:
-                        crypto_list = currencycycle(crypto_list)
+                if config['display']['trendingmode'] == True:
+                    # The hard-coded 7 is for the number of trending coins to show. Consider revising
+                    if (time.time() - lastcoinfetch > (7+howmanycoins)*updatefrequency) or (datapulled==False):
+                        # Reset coin list to static (non trending coins from config file)
+                        config['ticker']['currency']=staticcoins
+                        crypto_list = currencycycle(config['ticker']['currency'])
                         CURRENCY = crypto_list[0]
+                        config=gettrending(config)
+                        crypto_list = currencycycle(config['ticker']['currency'])
+                if (time.time() - lastcoinfetch > updatefrequency) or (datapulled == False):
+                    if config['display']['cycle'] == True and (datapulled == True):
+                        #crypto_list = currencycycle(crypto_list)
+                        #CURRENCY = crypto_list[0]
+                        crypto_list = currencycycle(config['ticker']['currency'])
+                        CURRENCY = crypto_list[0]
+                        config['ticker']['currency']=",".join(crypto_list)
                     lastcoinfetch = fullupdate()
                     datapulled = True
                     # Moved due to suspicion that button pressing was corrupting config file
-                    configwrite()
+                    #configwrite()
 
     except IOError as e:
         logging.info(e)
