@@ -7,7 +7,9 @@ import os
 import sys
 import logging
 import RPi.GPIO as GPIO
-from waveshare_epd import epd2in7b_V2
+#from waveshare_epd import epd2in7 as epdd
+#from waveshare_epd import epd2in13b_V3 as epdd
+from waveshare_epd import epd2in7b_V2 as epdd
 import time
 import requests
 import urllib, json
@@ -25,12 +27,64 @@ dirname = os.path.dirname(__file__)
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
-font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
+#font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 button_pressed = 0
 
-font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),13)
+#EPD_WIDTH  = epdd.EPD().width
+#EPD_HEIGHT = epdd.EPD().height
+EPD_HEIGHT = epdd.EPD().width
+EPD_WIDTH  = epdd.EPD().height
+
+LAY_A = round(EPD_WIDTH*1/3)
+LAY_B = round(EPD_WIDTH*2/3)
+
+######### 2.13 ########
+#LAYOUT_ICON_W = 60
+#LAYOUT_ICON_H = 60
+#EPD_TIME_Y    = 3
+#EPD_SPARK_X   = 45
+#EPD_SPARK_Y   = 10
+#EPD_ICON_X   = 0
+#EPD_ICON_Y   = 15
+#EPD_DAY_X   = 0
+#EPD_DAY_Y   = 55
+#EPD_VOL_X   = 0
+#EPD_VOL_Y   = 65
+#EPD_NAME_X   = 0
+#EPD_NAME_Y   = 1
+#EPD_RANK_X   = 0
+#EPD_RANK_Y   = EPD_HEIGHT
+#EPD_IP_Y     = EPD_HEIGHT
+#FONT_DATE_SIZE = 12
+#FONT_TAIL_SIZE = 9
+#FONT_INFO_SIZE = 30
+######### 2.7 ########
+LAYOUT_ICON_W = 100
+LAYOUT_ICON_H = 100
+EPD_TIME_Y    = 3
+EPD_SPARK_X   = 45
+EPD_SPARK_Y   = 10
+EPD_ICON_X   = 0
+EPD_ICON_Y   = 10
+EPD_DAY_X   = 0
+EPD_DAY_Y   = 60
+EPD_VOL_X   = 0
+EPD_VOL_Y   = 72
+EPD_NAME_X   = 0
+EPD_NAME_Y   = 1
+EPD_RANK_X   = 0
+EPD_RANK_Y   = EPD_HEIGHT
+EPD_IP_Y     = EPD_HEIGHT
+FONT_DATE_SIZE = 14
+FONT_TAIL_SIZE = 12
+FONT_INFO_SIZE = 50
+######################
+
+font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_DATE_SIZE)
+font_tail = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_TAIL_SIZE)
 font_info_name = "whitrabt"
+
 
 def internet(hostname="google.com"):
     """
@@ -190,7 +244,7 @@ def getData(config,other):
 def beanaproblem(message):
 #   A visual cue that the wheels have fallen off
     thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
-    image = Image.new('L', (264, 176), 255)    # 255: clear the image with white
+    image = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
     image.paste(thebean, (60,45))
     draw.text((95,15),str(time.strftime("%-H:%M %p, %-d %b %Y")),font =font_date,fill = 0)
@@ -297,43 +351,93 @@ def updateDisplay(config,pricestack,other):
 
 
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-        image = Image.new('L', (176,264), 255)    # 255: clear the image with white
+        image = Image.new('L', (EPD_HEIGHT, EPD_WIDTH), 255)    # 255: clear the image with white
+        image2 = Image.new('L', (EPD_HEIGHT, EPD_WIDTH), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)
+        draw2 = ImageDraw.Draw(image2)
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
-        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,font_info_name)
+        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,font_info_name )
         draw.text((10,10),timestamp,font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
-        image.paste(sparkbitmap,(10,125))
+        image2.paste(sparkbitmap,(10,125))
         if config['display']['orientation'] == 180 :
             image=image.rotate(180, expand=True)
+            image2=image2.rotate(180, expand=True)
     if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
-        image = Image.new('L', (264,176), 255)    # 255: clear the image with white
+
+
+        image = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
+        image2 = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)
+        draw2 = ImageDraw.Draw(image2)
+
+        #image.paste(sparkbitmap,(80,40))
+        #image2.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y))
+        image2.paste(sparkbitmap,(LAY_A, EPD_SPARK_Y))
+
+        tokenimage.thumbnail((LAYOUT_ICON_W, LAYOUT_ICON_H), Image.ANTIALIAS)
+        image.paste(tokenimage, (EPD_ICON_X, EPD_ICON_Y))
+
         if other['ATH']==True:
             image.paste(ATHbitmap,(205,85))
-        draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
+
+        w, h = draw.textsize(str(days_ago)+" day : "+pricechange,font =font_date)
+        draw.text((LAY_A+(LAY_B-w)/2,EPD_DAY_Y),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
+
         if 'showvolume' in config['display'] and config['display']['showvolume']:
-            draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-        writewrappedlines(image, pricestring,50-fontreduce,55,8,15,font_info_name)
-        image.paste(sparkbitmap,(80,40))
-        image.paste(tokenimage, (0,10))
+            w, h = draw.textsize("24h vol : " + human_format(other['volume']),font =font_date)
+            draw.text((LAY_A+(LAY_B-w)/2,EPD_VOL_Y),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
+
+        #writewrappedlines(image, pricestring,50-fontreduce,55,8,15,"Roboto-Medium" )
+        #writewrappedlines(image, pricestring,FONT_INFO_SIZE-fontreduce,40,8,15,font_info_name)
+        writewrappedlines(image, pricestring,FONT_INFO_SIZE-fontreduce,40,8,15,font_info_name)
+
         # Don't show rank for #1 coin, #1 doesn't need to show off
-        if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 1:
-            draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
+        #if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 1:
+        if 'showrank' in config['display'] and config['display']['showrank']:
+            w, h = draw.textsize("Rank:" + str("%d" % other['market_cap_rank']), font=font_tail)
+            #X = (LAY_A-w)/2
+            #if X < 1:
+            #   X = 1
+            draw2.text((EPD_RANK_X, EPD_RANK_Y-h), "Rank:" + str("%d" % other['market_cap_rank']), font=font_tail, fill = 0)
+
         if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
-            draw.text((95,28),whichcoin,font =font_date,fill = 0)
+        #if True:
+            #draw.text((1,1),whichcoin,font =font_date,fill = 0)
+            #w, h = draw.textsize(whichcoin,font =font_date)
+            #X = (LAY_A-w)/2
+            #if X < 1:
+            #   X = 1
+            draw.text((EPD_NAME_X, EPD_NAME_Y), whichcoin[0:9], font=font_date, fill=0)
+
 #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((95,15),timestamp,font =font_date,fill = 0)
+
+
+        ### Timestamp
+        #draw.text((95,15),timestamp,font =font_date,fill = 0)
+        w, h = draw.textsize(timestamp,font=font_date)
+        draw.text((EPD_WIDTH-w, EPD_TIME_Y), timestamp, font=font_date, fill=0)
+
+        ### Local IP
+        if 'showip' in config['display'] and config['display']['showip']:
+          local_ip = socket.gethostbyname(socket.gethostname()+".local")
+          print(local_ip)
+          w, h = draw.textsize(local_ip, font=font_tail)
+          draw2.text((EPD_WIDTH-w, EPD_IP_Y-h), local_ip, font=font_tail, fill=0)
+        
+
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
+            image2=image2.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
 #       image = ImageOps.mirror(image)
 #   If the display is inverted, invert the image usinng ImageOps
     if config['display']['inverted'] == True:
         image = ImageOps.invert(image)
+        image2 = ImageOps.invert(image2)
 #   Return the ticker image
-    return image
+    return image,image2
 
 def currencystringtolist(currstring):
     # Takes the string for currencies in the config.yaml file and turns it into a list
@@ -347,11 +451,12 @@ def currencycycle(curr_string):
     curr_list = curr_list[1:]+curr_list[:1]
     return curr_list
 
-def display_image(img):
-    epd = epd2in7b_V2.EPD()
+def display_image(img,img2):
+    epd = epdd.EPD()
+    #epd.Init_4Gray()
+    #epd.display_4Gray(epd.getbuffer_4Gray(img))
     epd.init()
-    imageRed = Image.new('L', (176,264), 255)    # 255: clear the image with white
-    epd.display(epd.getbuffer(img),epd.getbuffer(imageRed))
+    epd.display(epd.getbuffer(img), epd.getbuffer(img2))
     epd.sleep()
     thekeys=initkeys()
 #   Have to remove and add key events to make them work again
@@ -453,14 +558,14 @@ def fullupdate(config,lastcoinfetch):
         # generate sparkline
         makeSpark(pricestack)
         # update display
-        image=updateDisplay(config, pricestack, other)
-        display_image(image)
+        image,image2=updateDisplay(config, pricestack, other)
+        display_image(image,image2)
         lastgrab=time.time()
         time.sleep(0.2)
     except Exception as e:
         message="Data pull/print problem"
         image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
-        display_image(image)
+        display_image(image,image)
         time.sleep(20)
         lastgrab=lastcoinfetch
     return lastgrab
@@ -498,7 +603,7 @@ def main():
     except:
         logging.info("Timezone Not Set")
     try:
-        logging.info("epd2in7b_V2 BTC Frame")
+        logging.info("epd BTC Frame")
 #       Get the configuration from config.yaml
         with open(configfile) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
@@ -542,16 +647,16 @@ def main():
     except IOError as e:
         logging.error(e)
         image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
-        display_image(image)
+        display_image(image,image)
     except Exception as e:
         logging.error(e)
         image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
-        display_image(image)  
+        display_image(image,image)  
     except KeyboardInterrupt:    
         logging.info("ctrl + c:")
         image=beanaproblem("Keyboard Interrupt")
-        display_image(image)
-        epd2in7b_V2.epdconfig.module_exit()
+        display_image(image,image)
+        epdd.epdconfig.module_exit()
         GPIO.cleanup()
         exit()
 
