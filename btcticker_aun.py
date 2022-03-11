@@ -8,7 +8,8 @@ import sys
 import logging
 import RPi.GPIO as GPIO
 #from waveshare_epd import epd2in7 as epdd
-from waveshare_epd import epd2in13b_V3 as epdd
+#from waveshare_epd import epd2in13b_V3 as epdd
+from waveshare_epd import epd2in7b_V2 as epdd
 import time
 import requests
 import urllib, json
@@ -27,8 +28,6 @@ picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 #font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
-font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),12)
-font_tail = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),9)
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 button_pressed = 0
 
@@ -37,23 +36,55 @@ button_pressed = 0
 EPD_HEIGHT = epdd.EPD().width
 EPD_WIDTH  = epdd.EPD().height
 
-LAYOUT_ICON_W = 60
-LAYOUT_ICON_H = 60
+LAY_A = round(EPD_WIDTH*1/3)
+LAY_B = round(EPD_WIDTH*2/3)
 
+######### 2.13 ########
+#LAYOUT_ICON_W = 60
+#LAYOUT_ICON_H = 60
+#EPD_TIME_Y    = 3
+#EPD_SPARK_X   = 45
+#EPD_SPARK_Y   = 10
+#EPD_ICON_X   = 0
+#EPD_ICON_Y   = 15
+#EPD_DAY_X   = 0
+#EPD_DAY_Y   = 55
+#EPD_VOL_X   = 0
+#EPD_VOL_Y   = 65
+#EPD_NAME_X   = 0
+#EPD_NAME_Y   = 1
+#EPD_RANK_X   = 0
+#EPD_RANK_Y   = EPD_HEIGHT
+#EPD_IP_Y     = EPD_HEIGHT
+#FONT_DATE_SIZE = 12
+#FONT_TAIL_SIZE = 9
+#FONT_INFO_SIZE = 30
+######### 2.7 ########
+LAYOUT_ICON_W = 100
+LAYOUT_ICON_H = 100
 EPD_TIME_Y    = 3
 EPD_SPARK_X   = 45
 EPD_SPARK_Y   = 10
 EPD_ICON_X   = 0
-EPD_ICON_Y   = 15
+EPD_ICON_Y   = 10
 EPD_DAY_X   = 0
-EPD_DAY_Y   = 55
+EPD_DAY_Y   = 60
 EPD_VOL_X   = 0
-EPD_VOL_Y   = 65
+EPD_VOL_Y   = 72
 EPD_NAME_X   = 0
 EPD_NAME_Y   = 1
 EPD_RANK_X   = 0
 EPD_RANK_Y   = EPD_HEIGHT
 EPD_IP_Y     = EPD_HEIGHT
+FONT_DATE_SIZE = 14
+FONT_TAIL_SIZE = 12
+FONT_INFO_SIZE = 50
+######################
+
+font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_DATE_SIZE)
+font_tail = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_TAIL_SIZE)
+font_info_name = "whitrabt"
+
 
 def internet(hostname="google.com"):
     """
@@ -326,16 +357,15 @@ def updateDisplay(config,pricestack,other):
         draw2 = ImageDraw.Draw(image2)
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
-        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,"Roboto-Medium" )
+        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,font_info_name )
         draw.text((10,10),timestamp,font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
-        image.paste(sparkbitmap,(10,125))
+        image2.paste(sparkbitmap,(10,125))
         if config['display']['orientation'] == 180 :
             image=image.rotate(180, expand=True)
+            image2=image2.rotate(180, expand=True)
     if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
 
-        LAY_A = EPD_WIDTH*1/4
-        LAY_B = EPD_WIDTH*3/4
 
         image = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
         image2 = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
@@ -343,7 +373,8 @@ def updateDisplay(config,pricestack,other):
         draw2 = ImageDraw.Draw(image2)
 
         #image.paste(sparkbitmap,(80,40))
-        image2.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y))
+        #image2.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y))
+        image2.paste(sparkbitmap,(LAY_A, EPD_SPARK_Y))
 
         tokenimage.thumbnail((LAYOUT_ICON_W, LAYOUT_ICON_H), Image.ANTIALIAS)
         image.paste(tokenimage, (EPD_ICON_X, EPD_ICON_Y))
@@ -359,7 +390,8 @@ def updateDisplay(config,pricestack,other):
             draw.text((LAY_A+(LAY_B-w)/2,EPD_VOL_Y),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
 
         #writewrappedlines(image, pricestring,50-fontreduce,55,8,15,"Roboto-Medium" )
-        writewrappedlines(image, pricestring,30-fontreduce,40,8,15,"whitrabt" )
+        #writewrappedlines(image, pricestring,FONT_INFO_SIZE-fontreduce,40,8,15,font_info_name)
+        writewrappedlines(image, pricestring,FONT_INFO_SIZE-fontreduce,40,8,15,font_info_name)
 
         # Don't show rank for #1 coin, #1 doesn't need to show off
         #if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 1:

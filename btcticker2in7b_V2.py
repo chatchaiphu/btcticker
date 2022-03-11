@@ -29,6 +29,9 @@ font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 button_pressed = 0
 
+font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),13)
+font_info_name = "whitrabt"
+
 def internet(hostname="google.com"):
     """
     Host: google.com
@@ -298,7 +301,7 @@ def updateDisplay(config,pricestack,other):
         draw = ImageDraw.Draw(image)
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
-        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,"Roboto-Medium" )
+        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,font_info_name)
         draw.text((10,10),timestamp,font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
         image.paste(sparkbitmap,(10,125))
@@ -312,7 +315,7 @@ def updateDisplay(config,pricestack,other):
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
         if 'showvolume' in config['display'] and config['display']['showvolume']:
             draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-        writewrappedlines(image, pricestring,50-fontreduce,55,8,15,"Roboto-Medium" )
+        writewrappedlines(image, pricestring,50-fontreduce,55,8,15,font_info_name)
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
         # Don't show rank for #1 coin, #1 doesn't need to show off
