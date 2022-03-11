@@ -27,9 +27,8 @@ fontHorizontal = ImageFont.truetype( os.path.join(fontdir, 'Roboto-Medium.ttf'),
 font_date = ImageFont.truetype(os.path.join( fontdir, 'PixelSplitter-Bold.ttf'), 12)
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
-fontdir2 = os.path.join(os.path.dirname( os.path.realpath(__file__)), 'fonts')
-fontHorizontal = ImageFont.truetype( os.path.join(fontdir2, 'whitrabt.ttf'), 30)
-font_date = ImageFont.truetype(os.path.join( fontdir2, 'whitrabt.ttf'), 11)
+fontHorizontal = ImageFont.truetype( os.path.join(fontdir, 'whitrabt.ttf'), 30)
+font_date = ImageFont.truetype(os.path.join( fontdir, 'whitrabt.ttf'), 11)
 
 LAYOUT_ICON_W = 60
 LAYOUT_ICON_H = 60
