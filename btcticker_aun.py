@@ -31,59 +31,141 @@ configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.ya
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 button_pressed = 0
 
-#EPD_WIDTH  = epdd.EPD().width
-#EPD_HEIGHT = epdd.EPD().height
-EPD_HEIGHT = epdd.EPD().width
-EPD_WIDTH  = epdd.EPD().height
-
-LAY_A = round(EPD_WIDTH*1/3)
-LAY_B = round(EPD_WIDTH*2/3)
-
-######### 2.13 ########
-#LAYOUT_ICON_W = 60
-#LAYOUT_ICON_H = 60
-#EPD_TIME_Y    = 3
-#EPD_SPARK_X   = 45
-#EPD_SPARK_Y   = 10
-#EPD_ICON_X   = 0
-#EPD_ICON_Y   = 15
-#EPD_DAY_X   = 0
-#EPD_DAY_Y   = 55
-#EPD_VOL_X   = 0
-#EPD_VOL_Y   = 65
-#EPD_NAME_X   = 0
-#EPD_NAME_Y   = 1
-#EPD_RANK_X   = 0
-#EPD_RANK_Y   = EPD_HEIGHT
-#EPD_IP_Y     = EPD_HEIGHT
-#FONT_DATE_SIZE = 12
-#FONT_TAIL_SIZE = 9
-#FONT_INFO_SIZE = 30
-######### 2.7 ########
-LAYOUT_ICON_W = 100
-LAYOUT_ICON_H = 100
-EPD_TIME_Y    = 3
-EPD_SPARK_X   = 45
-EPD_SPARK_Y   = 10
-EPD_ICON_X   = 0
-EPD_ICON_Y   = 10
-EPD_DAY_X   = 0
-EPD_DAY_Y   = 60
-EPD_VOL_X   = 0
-EPD_VOL_Y   = 72
-EPD_NAME_X   = 0
-EPD_NAME_Y   = 1
-EPD_RANK_X   = 0
-EPD_RANK_Y   = EPD_HEIGHT
-EPD_IP_Y     = EPD_HEIGHT
-FONT_DATE_SIZE = 14
-FONT_TAIL_SIZE = 12
-FONT_INFO_SIZE = 50
-######################
-
-font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_DATE_SIZE)
-font_tail = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_TAIL_SIZE)
-font_info_name = "whitrabt"
+#EPD_DISP_TYPE = 3
+########## 2.13 ########
+#if EPD_DISP_TYPE==1:
+#    EPD_HEIGHT = epdd.EPD().width
+#    EPD_WIDTH  = epdd.EPD().height
+#    LAY_A = round(EPD_WIDTH*1/3)
+#    LAY_B = round(EPD_WIDTH*2/3)
+#    LAY_C = round(EPD_WIDTH*2/3)
+#    LAYOUT_ICON_W = 60
+#    LAYOUT_ICON_H = 60
+#    EPD_TIME_Y    = 3
+#    EPD_SPARK_X   = 45
+#    EPD_SPARK_Y   = 10
+#    EPD_ICON_X   = 0
+#    EPD_ICON_Y   = 15
+#    EPD_DAY_X   = 0
+#    EPD_DAY_Y   = 55
+#    EPD_VOL_X   = 0
+#    EPD_VOL_Y   = 65
+#    EPD_NAME_X   = 0
+#    EPD_NAME_Y   = 3
+#    EPD_RANK_X   = 0
+#    EPD_RANK_Y   = EPD_HEIGHT
+#    EPD_PRICE_X  = 0
+#    EPD_PRICE_Y  = 55
+#    EPD_IP_Y     = EPD_HEIGHT
+#    FONT_DATE_SIZE = 12
+#    FONT_TAIL_SIZE = 9
+#    FONT_PRICE_SIZE = 30
+#    FONT_PRICE_REDUCE = 5
+#    FONT_VOL_SIZE  = 12
+#    EPD_MLT_ROW_Y = 0
+#    EPD_MLT_NUM = 1
+########## 2.7 ########
+#elif EPD_DISP_TYPE == 2:
+#    EPD_HEIGHT = epdd.EPD().width
+#    EPD_WIDTH  = epdd.EPD().height
+#    LAY_A = round(EPD_WIDTH*1/3)
+#    LAY_B = round(EPD_WIDTH*2/3)
+#    LAY_C = round(EPD_WIDTH*2/3)
+#    LAYOUT_ICON_W = 100
+#    LAYOUT_ICON_H = 100
+#    EPD_TIME_Y    = 3
+#    EPD_SPARK_X   = 45
+#    EPD_SPARK_Y   = 10
+#    EPD_ICON_X   = 0
+#    EPD_ICON_Y   = 10
+#    EPD_DAY_X   = 0
+#    EPD_DAY_Y   = 60
+#    EPD_VOL_X   = 0
+#    EPD_VOL_Y   = 75
+#    EPD_NAME_X   = 3
+#    EPD_NAME_Y   = 2
+#    EPD_RANK_X   = 0
+#    EPD_RANK_Y   = 2
+#    EPD_PRICE_X  = 0
+#    EPD_PRICE_Y  = 55
+#    EPD_IP_Y     = EPD_HEIGHT
+#    FONT_DATE_SIZE = 14
+#    FONT_TAIL_SIZE = 12
+#    FONT_PRICE_SIZE = 50
+#    FONT_PRICE_REDUCE = 15
+#    FONT_VOL_SIZE  = 14
+#    EPD_MLT_ROW_Y = 0
+#    EPD_MLT_NUM = 1
+########## 2.7 2-Rows ########
+#elif EPD_DISP_TYPE == 3:
+#    EPD_HEIGHT = epdd.EPD().width
+#    EPD_WIDTH  = epdd.EPD().height
+#    LAY_A = round(EPD_WIDTH*1/4)
+#    LAY_B = round(EPD_WIDTH*1/4)
+#    LAY_C = round(EPD_WIDTH*2/4)
+#    EPD_TIME_Y    = 3
+#    EPD_IP_Y     = EPD_HEIGHT
+#    FONT_DATE_SIZE = 12
+#    FONT_TAIL_SIZE = 12
+#    EPD_NAME_X   = LAY_A + 0
+#    EPD_NAME_Y   = 15
+#    EPD_RANK_X   = 0
+#    EPD_RANK_Y   = 80
+#    EPD_SPARK_X   = 45
+#    EPD_SPARK_Y   = 10
+#    EPD_ICON_X   = 0
+#    EPD_ICON_Y   = 10
+#    EPD_DAY_X   = 0
+#    EPD_DAY_Y   = 30
+#    EPD_VOL_X   = 0
+#    EPD_VOL_Y   = 45
+#    LAYOUT_ICON_W = 64
+#    LAYOUT_ICON_H = 64
+#    EPD_PRICE_X  = 0
+#    EPD_PRICE_Y  = -12
+#    FONT_PRICE_SIZE = 30
+#    FONT_PRICE_REDUCE = 2
+#    FONT_VOL_SIZE  = 10
+#    EPD_MLT_ROW_Y = 80
+#    EPD_MLT_NUM = 2
+########### 2.7 2-Rows ########
+#else:
+#    EPD_HEIGHT = epdd.EPD().width
+#    EPD_WIDTH  = epdd.EPD().height
+#    LAY_A = round(EPD_WIDTH*1/4)
+#    LAY_B = round(EPD_WIDTH*1/4)
+#    LAY_C = round(EPD_WIDTH*2/4)
+#    EPD_TIME_Y    = 3
+#    EPD_IP_Y     = EPD_HEIGHT
+#    FONT_DATE_SIZE = 12
+#    FONT_TAIL_SIZE = 12
+#    EPD_NAME_X   = LAY_A + 0
+#    EPD_NAME_Y   = 15
+#    EPD_RANK_X   = 0
+#    EPD_RANK_Y   = 80
+#    EPD_SPARK_X   = 45
+#    EPD_SPARK_Y   = 10
+#    EPD_ICON_X   = 0
+#    EPD_ICON_Y   = 10
+#    EPD_DAY_X   = 0
+#    EPD_DAY_Y   = 30
+#    EPD_VOL_X   = 0
+#    EPD_VOL_Y   = 45
+#    LAYOUT_ICON_W = 64
+#    LAYOUT_ICON_H = 64
+#    EPD_PRICE_X  = 0
+#    EPD_PRICE_Y  = -12
+#    FONT_PRICE_SIZE = 30
+#    FONT_PRICE_REDUCE = 2
+#    FONT_VOL_SIZE  = 10
+#    EPD_MLT_ROW_Y = 80
+#    EPD_MLT_NUM = 1
+#######################
+#
+#font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_DATE_SIZE)
+#font_tail = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_TAIL_SIZE)
+#font_info_name = "whitrabt"
+#font_vol = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_VOL_SIZE)
 
 
 def internet(hostname="google.com"):
@@ -129,11 +211,11 @@ def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-
     draw_y = (img_height - text_height)//2 + y_offset
     draw.text((draw_x, draw_y), text, font=font,fill=fill )
 
-def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstring="Roboto-Light"):
+def writewrappedlines(img,text,fontsize=16,x_text=0,y_text=20,height=15, width=25,fontstring="Roboto-Light"):
     lines = textwrap.wrap(text, width)
     numoflines=0
     for line in lines:
-        _place_text(img, line,0, y_text, fontsize,fontstring)
+        _place_text(img, line, x_text, y_text, fontsize,fontstring)
         y_text += height
         numoflines+=1
     return img
@@ -148,14 +230,14 @@ def getgecko(url):
         geckojson={}
     return geckojson, connectfail
 
-def getData(config,other):
+def getData(config, whichcoin, fiat, other):
     """
     The function to grab the data (TO DO: need to test properly)
     """
 
     sleep_time = 10
     num_retries = 5
-    whichcoin,fiat=configtocoinandfiat(config)
+    #whichcoin,fiat=configtocoinandfiat(config)
     logging.info("Getting Data")
     days_ago=int(config['ticker']['sparklinedays'])
     endtime = int(time.time())
@@ -251,7 +333,7 @@ def beanaproblem(message):
     writewrappedlines(image, "Issue: "+message)
     return image
 
-def makeSpark(pricestack):
+def makeSpark(pricestack, whichcoin, fiat):
     # Draw and save the sparkline that represents historical data
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)
     themean= sum(pricestack)/float(len(pricestack))
@@ -266,14 +348,26 @@ def makeSpark(pricestack):
     ax.set_yticks([])
     ax.axhline(c='k', linewidth=4, linestyle=(0, (5, 2, 1, 2)))
     # Save the resulting bmp file to the images directory
-    plt.savefig(os.path.join(picdir,'spark.png'), dpi=17)
-    imgspk = Image.open(os.path.join(picdir,'spark.png'))
-    file_out = os.path.join(picdir,'spark.bmp')
+    plt.savefig(os.path.join(picdir,'spark'+whichcoin+'.png'), dpi=17)
+    imgspk = Image.open(os.path.join(picdir,'spark'+whichcoin+'.png'))
+    file_out = os.path.join(picdir,'spark'+whichcoin+'.bmp')
     imgspk.save(file_out)
     plt.close(fig)
     plt.cla() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
     imgspk.close()
+    return
+
+def drawtextalign(draw, text, x, y, w, font, fill=0, align='L'):
+    dw, dh = draw.textsize(text, font=font)
+    if align == 'C' :
+        dx = x + (w - dw) / 2
+    elif align == 'R' :
+        dx = x + (w - dw)
+    else :
+        dx = x
+    dy = y
+    draw.text((dx, dy), text, font=font, fill=fill)
     return
 
 def custom_format_currency(value, currency, locale):
@@ -284,154 +378,182 @@ def custom_format_currency(value, currency, locale):
     return pattern.apply(value, locale, currency=currency, force_frac=force_frac)
 
 
-def updateDisplay(config,pricestack,other):
+def updateDisplay(config, other):
     """
     Takes the price data, the desired coin/fiat combo along with the config info for formatting
     if config is re-written following adustment we could avoid passing the last two arguments as
     they will just be the first two items of their string in config
     """
-    with open(configfile) as f:
-        originalconfig = yaml.load(f, Loader=yaml.FullLoader)
-    originalcoin=originalconfig['ticker']['currency']
-    originalcoin_list = originalcoin.split(",")
-    originalcoin_list = [x.strip(' ') for x in originalcoin_list]
-    whichcoin,fiat=configtocoinandfiat(config)
-    days_ago=int(config['ticker']['sparklinedays'])
-    pricenow = pricestack[-1]
-    if config['display']['inverted'] == True:
-        currencythumbnail= 'currency/'+whichcoin+'INV.bmp'
-    else:
-        currencythumbnail= 'currency/'+whichcoin+'.bmp'
-    tokenfilename = os.path.join(picdir,currencythumbnail)
-    sparkbitmap = Image.open(os.path.join(picdir,'spark.bmp'))
-    ATHbitmap= Image.open(os.path.join(picdir,'ATH.bmp'))
-#   Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
-    if os.path.isfile(tokenfilename):
-        logging.debug("Getting token Image from Image directory")
-        tokenimage = Image.open(tokenfilename).convert("RGBA")
-    else:
-        logging.debug("Getting token Image from Coingecko")
-        tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
-        rawimage = requests.get(tokenimageurl, headers=headers).json()
-        tokenimage = Image.open(requests.get(rawimage['image']['large'], headers = headers, stream=True).raw).convert("RGBA")
-        resize = 100,100
-        tokenimage.thumbnail(resize, Image.ANTIALIAS)
-        # If inverted is true, invert the token symbol before placing if on the white BG so that it is uninverted at the end - this will make things more
-        # legible on a black display
+
+    #if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
+    #    EPD_HEIGHT = epdd.EPD().height
+    #    EPD_WIDTH  = epdd.EPD().width
+    #else:
+    #    EPD_HEIGHT = epdd.EPD().width
+    #    EPD_WIDTH  = epdd.EPD().height
+
+    print(EPD_WIDTH, EPD_HEIGHT)
+
+    image = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
+    image2 = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
+    draw = ImageDraw.Draw(image)
+    draw2 = ImageDraw.Draw(image2)
+
+    whichcoins = currencystringtolist(config['ticker']['currency'])[:EPD_MLT_NUM]
+    faits = currencystringtolist(config['ticker']['fiatcurrency'])[:EPD_MLT_NUM]
+    print(whichcoins)
+    #print(fiats)
+    #whichcoin, fiat = configtocoinandfiat(config)
+
+    for idx in range(EPD_MLT_NUM):
+        whichcoin = whichcoins[idx]
+        fiat = faits[idx]
+        
+        EPD_OFFSET_Y = idx * EPD_MLT_ROW_Y
+
+        pricestack, ATH = getData(config, whichcoin, fiat, other)
+        makeSpark(pricestack, whichcoin, fiat)
+
+        #with open(configfile) as f:
+        #    originalconfig = yaml.load(f, Loader=yaml.FullLoader)
+        #originalcoin=originalconfig['ticker']['currency']
+        #originalcoin_list = originalcoin.split(",")
+        #originalcoin_list = [x.strip(' ') for x in originalcoin_list]
+
+        days_ago=int(config['ticker']['sparklinedays'])
+        pricenow = pricestack[-1]
         if config['display']['inverted'] == True:
-            #PIL doesnt like to invert binary images, so convert to RGB, invert and then convert back to RGBA
-            tokenimage = ImageOps.invert( tokenimage.convert('RGB') )
-            tokenimage = tokenimage.convert('RGBA')
-        new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
-        new_image.paste(tokenimage, (10, 10), tokenimage)
-        tokenimage=new_image
-        tokenimage.thumbnail((100,100),Image.ANTIALIAS)
-        tokenimage.save(tokenfilename)
-    pricechangeraw = round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2)
-    if pricechangeraw >= 10:
-        pricechange = str("%+d" % pricechangeraw)+"%"
-    else:
-        pricechange = str("%+.2f" % pricechangeraw)+"%"
-    if '24h' in config['display'] and config['display']['24h']:
-        timestamp= str(time.strftime("%-H:%M, %d %b %Y"))
-    else:
-        timestamp= str(time.strftime("%-I:%M %p, %d %b %Y"))
-    # This is where a locale change can be made
-    localetag = 'en_US' # This is a way of forcing the locale currency info eg 'de_DE' for German formatting
-    fontreduce=0 # This is an adjustment that needs to be applied to coins with very low fiat value per coin
-    if pricenow > 10000:
-        # round to nearest whole unit of currency, this is an ugly hack for now
-        pricestring=custom_format_currency(int(pricenow), fiat.upper(), localetag)
-    elif pricenow >.01:
-        pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
-    else:
-        # looks like you have a coin with a tiny value per coin, drop the font size, not ideal but better than just printing SHITCOIN
-        pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
-        fontreduce=15
+            currencythumbnail= 'currency/'+whichcoin+'INV.bmp'
+        else:
+            currencythumbnail= 'currency/'+whichcoin+'.bmp'
+        tokenfilename = os.path.join(picdir,currencythumbnail)
+        sparkbitmap = Image.open(os.path.join(picdir,'spark'+whichcoin+'.bmp'))
+        ATHbitmap= Image.open(os.path.join(picdir,'ATH.bmp'))
+#       Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
+        if os.path.isfile(tokenfilename):
+            logging.debug("Getting token Image from Image directory")
+            tokenimage = Image.open(tokenfilename).convert("RGBA")
+        else:
+            logging.debug("Getting token Image from Coingecko")
+            tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
+            rawimage = requests.get(tokenimageurl, headers=headers).json()
+            tokenimage = Image.open(requests.get(rawimage['image']['large'], headers = headers, stream=True).raw).convert("RGBA")
+            resize = 100,100
+            tokenimage.thumbnail(resize, Image.ANTIALIAS)
+            # If inverted is true, invert the token symbol before placing if on the white BG so that it is uninverted at the end - this will make things more
+            # legible on a black display
+            if config['display']['inverted'] == True:
+                #PIL doesnt like to invert binary images, so convert to RGB, invert and then convert back to RGBA
+                tokenimage = ImageOps.invert( tokenimage.convert('RGB') )
+                tokenimage = tokenimage.convert('RGBA')
+            new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
+            new_image.paste(tokenimage, (10, 10), tokenimage)
+            tokenimage=new_image
+            tokenimage.thumbnail((100,100),Image.ANTIALIAS)
+            tokenimage.save(tokenfilename)
+        pricechangeraw = round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2)
+        if pricechangeraw >= 10:
+            pricechange = str("%+d" % pricechangeraw)+"%"
+        else:
+            pricechange = str("%+.2f" % pricechangeraw)+"%"
+        if '24h' in config['display'] and config['display']['24h']:
+            timestamp= str(time.strftime("%-H:%M, %d %b %Y"))
+        else:
+            timestamp= str(time.strftime("%-I:%M %p, %d %b %Y"))
+        # This is where a locale change can be made
+        localetag = 'en_US' # This is a way of forcing the locale currency info eg 'de_DE' for German formatting
+        fontreduce=0 # This is an adjustment that needs to be applied to coins with very low fiat value per coin
+        if pricenow > 10000:
+            # round to nearest whole unit of currency, this is an ugly hack for now
+            pricestring=custom_format_currency(int(pricenow), fiat.upper(), localetag)
+        elif pricenow >.01:
+            pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
+        else:
+            # looks like you have a coin with a tiny value per coin, drop the font size, not ideal but better than just printing SHITCOIN
+            pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
+            fontreduce=FONT_PRICE_REDUCE
 
 
-    if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-        image = Image.new('L', (EPD_HEIGHT, EPD_WIDTH), 255)    # 255: clear the image with white
-        image2 = Image.new('L', (EPD_HEIGHT, EPD_WIDTH), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)
-        draw2 = ImageDraw.Draw(image2)
-        draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
-        draw.text((110,95),pricechange,font =font_date,fill = 0)
-        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,font_info_name )
-        draw.text((10,10),timestamp,font =font_date,fill = 0)
-        image.paste(tokenimage, (10,25))
-        image2.paste(sparkbitmap,(10,125))
-        if config['display']['orientation'] == 180 :
-            image=image.rotate(180, expand=True)
-            image2=image2.rotate(180, expand=True)
-    if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
+        #if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
+            #image = Image.new('L', (EPD_HEIGHT, EPD_WIDTH), 255)    # 255: clear the image with white
+            #image2 = Image.new('L', (EPD_HEIGHT, EPD_WIDTH), 255)    # 255: clear the image with white
+            #draw = ImageDraw.Draw(image)
+            #draw2 = ImageDraw.Draw(image2)
+
+            #draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
+            #draw.text((110,95),pricechange,font =font_date,fill = 0)
+            #writewrappedlines(image, pricestring, 40-fontreduce, 0, 65, 8, 15, font_info_name)
+            #draw.text((10,10),timestamp,font =font_date,fill = 0)
+            #image.paste(tokenimage, (10,25))
+            #image2.paste(sparkbitmap,(10,125))
 
 
-        image = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
-        image2 = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)
-        draw2 = ImageDraw.Draw(image2)
 
-        #image.paste(sparkbitmap,(80,40))
-        #image2.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y))
-        image2.paste(sparkbitmap,(LAY_A, EPD_SPARK_Y))
+            #if config['display']['orientation'] == 180 :
+            #    image=image.rotate(180, expand=True)
+            #    image2=image2.rotate(180, expand=True)
+        #if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
+        if True:
+            #image = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
+            #image2 = Image.new('L', (EPD_WIDTH, EPD_HEIGHT), 255)    # 255: clear the image with white
+            #draw = ImageDraw.Draw(image)
+            #draw2 = ImageDraw.Draw(image2)
 
-        tokenimage.thumbnail((LAYOUT_ICON_W, LAYOUT_ICON_H), Image.ANTIALIAS)
-        image.paste(tokenimage, (EPD_ICON_X, EPD_ICON_Y))
+####    ###################################################################################
 
-        if other['ATH']==True:
-            image.paste(ATHbitmap,(205,85))
+            #image.paste(sparkbitmap,(80,40))
+            #image2.paste(sparkbitmap,(LAY_A + LAY_B, EPD_SPARK_Y + EPD_OFFSET_Y))
+            image2.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y + EPD_OFFSET_Y))
 
-        w, h = draw.textsize(str(days_ago)+" day : "+pricechange,font =font_date)
-        draw.text((LAY_A+(LAY_B-w)/2,EPD_DAY_Y),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
+            tokenimage.thumbnail((LAYOUT_ICON_W, LAYOUT_ICON_H), Image.ANTIALIAS)
+            image.paste(tokenimage, (EPD_ICON_X, EPD_ICON_Y + EPD_OFFSET_Y))
 
-        if 'showvolume' in config['display'] and config['display']['showvolume']:
-            w, h = draw.textsize("24h vol : " + human_format(other['volume']),font =font_date)
-            draw.text((LAY_A+(LAY_B-w)/2,EPD_VOL_Y),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
+            if other['ATH']==True:
+                image.paste(ATHbitmap,(205,85))
 
-        #writewrappedlines(image, pricestring,50-fontreduce,55,8,15,"Roboto-Medium" )
-        #writewrappedlines(image, pricestring,FONT_INFO_SIZE-fontreduce,40,8,15,font_info_name)
-        writewrappedlines(image, pricestring,FONT_INFO_SIZE-fontreduce,40,8,15,font_info_name)
+            drawtextalign(draw, str(days_ago)+" day : "+pricechange, EPD_DAY_X, EPD_DAY_Y+EPD_OFFSET_Y, EPD_DAY_W, font=font_vol, fill=0, align=EPD_DAY_A)
 
-        # Don't show rank for #1 coin, #1 doesn't need to show off
-        #if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 1:
-        if 'showrank' in config['display'] and config['display']['showrank']:
-            w, h = draw.textsize("Rank:" + str("%d" % other['market_cap_rank']), font=font_tail)
-            #X = (LAY_A-w)/2
-            #if X < 1:
-            #   X = 1
-            draw2.text((EPD_RANK_X, EPD_RANK_Y-h), "Rank:" + str("%d" % other['market_cap_rank']), font=font_tail, fill = 0)
+            if 'showvolume' in config['display'] and config['display']['showvolume']:
+                drawtextalign(draw, "24h vol : " + human_format(other['volume']), EPD_VOL_X, EPD_VOL_Y+EPD_OFFSET_Y, EPD_VOL_W, font=font_vol, fill=0, align=EPD_DAY_A)
 
-        if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
-        #if True:
-            #draw.text((1,1),whichcoin,font =font_date,fill = 0)
-            #w, h = draw.textsize(whichcoin,font =font_date)
-            #X = (LAY_A-w)/2
-            #if X < 1:
-            #   X = 1
-            draw.text((EPD_NAME_X, EPD_NAME_Y), whichcoin[0:9], font=font_date, fill=0)
+            writewrappedlines(image, pricestring, FONT_PRICE_SIZE-fontreduce, EPD_PRICE_X, EPD_PRICE_Y + EPD_OFFSET_Y, 8, 15, font_info_name)
 
-#       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
+            # Don't show rank for #1 coin, #1 doesn't need to show off
+            #if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 1:
+            if 'showrank' in config['display'] and config['display']['showrank']:
+                #w, h = draw.textsize(whichcoin[0:9],font =font_date)
+                #draw2.text((EPD_NAME_X, EPD_NAME_Y + EPD_OFFSET_Y), whichcoin[0:9], font=font_date, fill=0)
+                #draw2.text((EPD_NAME_X + w, EPD_NAME_Y + EPD_OFFSET_Y), "(" + str("%d" % other['market_cap_rank']) + ")", font=font_date, fill = 0)
+                #w, h = draw.textsize("(" + str("%d" % other['market_cap_rank']) + ")", font=font_tail)
+                #draw2.text((EPD_RANK_X, EPD_RANK_Y + EPD_OFFSET_Y - h), "(" + str("%d" % other['market_cap_rank']) + ")", font=font_tail, fill = 0)
+                drawtextalign(draw2, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_date, fill=0, align=EPD_NAME_A)
+
+            #draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
 
 
-        ### Timestamp
-        #draw.text((95,15),timestamp,font =font_date,fill = 0)
-        w, h = draw.textsize(timestamp,font=font_date)
-        draw.text((EPD_WIDTH-w, EPD_TIME_Y), timestamp, font=font_date, fill=0)
 
-        ### Local IP
-        if 'showip' in config['display'] and config['display']['showip']:
-          local_ip = socket.gethostbyname(socket.gethostname()+".local")
-          print(local_ip)
-          w, h = draw.textsize(local_ip, font=font_tail)
-          draw2.text((EPD_WIDTH-w, EPD_IP_Y-h), local_ip, font=font_tail, fill=0)
+#######################################################################################
+
+    ### Timestamp
+    #draw.text((95,15),timestamp,font =font_date,fill = 0)
+    w, h = draw.textsize(timestamp,font=font_date)
+    draw.text((EPD_WIDTH-w, EPD_TIME_Y), timestamp, font=font_date, fill=0)
+
+    ### Local IP
+    if 'showip' in config['display'] and config['display']['showip']:
+        local_ip = socket.gethostbyname(socket.gethostname()+".local")
+        print(local_ip)
+        w, h = draw.textsize(local_ip, font=font_tail)
+        draw2.text((EPD_WIDTH-w, EPD_IP_Y-h), local_ip, font=font_tail, fill=0)
         
 
-        if config['display']['orientation'] == 270 :
-            image=image.rotate(180, expand=True)
-            image2=image2.rotate(180, expand=True)
+    if config['display']['orientation'] == 270 or config['display']['orientation'] == 180 :
+        image=image.rotate(180, expand=True)
+        image2=image2.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
 #       image = ImageOps.mirror(image)
+
+
 #   If the display is inverted, invert the image usinng ImageOps
     if config['display']['inverted'] == True:
         image = ImageOps.invert(image)
@@ -448,7 +570,7 @@ def currencystringtolist(currstring):
 def currencycycle(curr_string):
     curr_list=currencystringtolist(curr_string)
     # Rotate the array of currencies from config.... [a b c] becomes [b c a]
-    curr_list = curr_list[1:]+curr_list[:1]
+    curr_list = curr_list[EPD_MLT_NUM:]+curr_list[:EPD_MLT_NUM]
     return curr_list
 
 def display_image(img,img2):
@@ -554,11 +676,13 @@ def fullupdate(config,lastcoinfetch):
     """
     other={}
     try:
-        pricestack, ATH = getData(config, other)
+        #pricestack, ATH = getData(config, other)
         # generate sparkline
-        makeSpark(pricestack)
+        #makeSpark(pricestack)
         # update display
-        image,image2=updateDisplay(config, pricestack, other)
+        #image,image2=updateDisplay(config, pricestack, other)
+        
+        image,image2=updateDisplay(config, other)
         display_image(image,image2)
         lastgrab=time.time()
         time.sleep(0.2)
@@ -570,11 +694,11 @@ def fullupdate(config,lastcoinfetch):
         lastgrab=lastcoinfetch
     return lastgrab
 
-def configtocoinandfiat(config):
+def configtocoinandfiat(config, idx=0):
     crypto_list = currencystringtolist(config['ticker']['currency'])
     fiat_list=currencystringtolist(config['ticker']['fiatcurrency'])
-    currency=crypto_list[0]
-    fiat=fiat_list[0]
+    currency=crypto_list[idx]
+    fiat=fiat_list[idx]
     return currency, fiat
 
 def gettrending(config):
@@ -589,6 +713,222 @@ def gettrending(config):
         coinlist+=","+str(trendingcoins['coins'][i]['item']['id'])
     config['ticker']['currency']=coinlist
     return config
+
+def setupdisplay(config):
+    print("SETUP DISPLAY")
+    global EPD_DISP_TYPE
+    global EPD_HEIGHT
+    global EPD_WIDTH
+    global LAY_A
+    global LAY_B
+    global LAY_C
+    global LAYOUT_ICON_W
+    global LAYOUT_ICON_H
+    global EPD_TIME_Y
+    global EPD_SPARK_X
+    global EPD_SPARK_Y
+    global EPD_ICON_X
+    global EPD_ICON_Y
+    global EPD_DAY_X
+    global EPD_DAY_Y
+    global EPD_DAY_W
+    global EPD_DAY_A
+    global EPD_VOL_X
+    global EPD_VOL_Y
+    global EPD_VOL_W
+    global EPD_VOL_A
+    global EPD_NAME_X
+    global EPD_NAME_Y
+    global EPD_NAME_W
+    global EPD_NAME_A
+    global EPD_RANK_X
+    global EPD_RANK_Y
+    global EPD_PRICE_X
+    global EPD_PRICE_Y
+    global EPD_IP_Y
+    global FONT_DATE_SIZE
+    global FONT_TAIL_SIZE
+    global FONT_PRICE_SIZE
+    global FONT_PRICE_REDUCE
+    global FONT_VOL_SIZE
+    global EPD_MLT_ROW_Y
+    global EPD_MLT_NUM
+    global font_date
+    global font_tail
+    global font_info_name
+    global font_vol
+
+    EPD_DISP_TYPE = config['display']['disptype']
+    if EPD_DISP_TYPE==4 :
+        if config['display']['orientation'] != 0 and config['display']['orientation'] != 180 :
+            config['display']['orientation'] = 0
+    else :
+        if config['display']['orientation'] != 90 and config['display']['orientation'] != 270 :
+            config['display']['orientation'] = 270
+
+    if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
+        EPD_HEIGHT = epdd.EPD().height
+        EPD_WIDTH  = epdd.EPD().width
+    else:
+        EPD_HEIGHT = epdd.EPD().width
+        EPD_WIDTH  = epdd.EPD().height
+
+    if EPD_DISP_TYPE==1:
+        LAY_A = round(EPD_WIDTH*1/3)
+        LAY_B = round(EPD_WIDTH*2/3)
+        LAY_C = round(EPD_WIDTH*0/3)
+        LAYOUT_ICON_W = 60
+        LAYOUT_ICON_H = 60
+        EPD_TIME_Y    = 3
+        EPD_SPARK_X   = 45
+        EPD_SPARK_Y   = 10
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 15
+        EPD_DAY_X   = 0
+        EPD_DAY_Y   = 55
+        EPD_DAY_W   = LAY_B
+        EPD_DAY_A   = 'C'
+        EPD_VOL_X   = 0
+        EPD_VOL_Y   = 65
+        EPD_VOL_W   = LAY_B
+        EPD_VOL_A   = 'C'
+        EPD_NAME_X   = 0
+        EPD_NAME_Y   = 3
+        EPD_NAME_W   = LAY_A
+        EPD_NAME_A   = 'L'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = EPD_HEIGHT
+        EPD_PRICE_X  = 0
+        EPD_PRICE_Y  = 55
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 12
+        FONT_TAIL_SIZE = 9
+        FONT_PRICE_SIZE = 30
+        FONT_PRICE_REDUCE = 5
+        FONT_VOL_SIZE  = 12
+        EPD_MLT_ROW_Y = 0
+        EPD_MLT_NUM = 1
+    ######### 2.7 ########
+    elif EPD_DISP_TYPE == 2:
+        LAY_A = round(EPD_WIDTH*1/3)
+        LAY_B = round(EPD_WIDTH*2/3)
+        LAY_C = round(EPD_WIDTH*0/3)
+        LAYOUT_ICON_W = 100
+        LAYOUT_ICON_H = 100
+        EPD_TIME_Y    = 3
+        EPD_SPARK_X   = 45
+        EPD_SPARK_Y   = 10
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 10
+        EPD_DAY_X   = LAY_A
+        EPD_DAY_Y   = 60
+        EPD_DAY_W   = LAY_B
+        EPD_DAY_A   = 'C'
+        EPD_VOL_X   = LAY_A
+        EPD_VOL_Y   = 75
+        EPD_VOL_W   = LAY_B
+        EPD_VOL_A   = 'C'
+        EPD_NAME_X   = 3
+        EPD_NAME_Y   = 2
+        EPD_NAME_W   = LAY_A
+        EPD_NAME_A   = 'L'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = 2
+        EPD_PRICE_X  = 0
+        EPD_PRICE_Y  = 55
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 14
+        FONT_TAIL_SIZE = 12
+        FONT_PRICE_SIZE = 50
+        FONT_PRICE_REDUCE = 15
+        FONT_VOL_SIZE  = 14
+        EPD_MLT_ROW_Y = 0
+        EPD_MLT_NUM = 1
+    ######### 2.7 2-Rows ########
+    elif EPD_DISP_TYPE == 3:
+        LAY_A = round(EPD_WIDTH*1/4)
+        LAY_B = round(EPD_WIDTH*1/4)
+        LAY_C = round(EPD_WIDTH*2/4)
+        EPD_TIME_Y    = 3
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 12
+        FONT_TAIL_SIZE = 12
+        EPD_NAME_X   = LAY_A
+        EPD_NAME_Y   = 15
+        EPD_NAME_W   = LAY_B + 20
+        EPD_NAME_A   = 'R'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = 80
+        EPD_SPARK_X   = LAY_A + LAY_B
+        EPD_SPARK_Y   = 10
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 10
+        EPD_DAY_X   = LAY_A
+        EPD_DAY_Y   = 30
+        EPD_DAY_W   = LAY_B + 20
+        EPD_DAY_A   = 'R'
+        EPD_VOL_X   = LAY_A
+        EPD_VOL_Y   = 45
+        EPD_VOL_W   = LAY_B + 20
+        EPD_VOL_A   = 'R'
+        LAYOUT_ICON_W = 64
+        LAYOUT_ICON_H = 64
+        EPD_PRICE_X  = 0
+        EPD_PRICE_Y  = -12
+        FONT_PRICE_SIZE = 30
+        FONT_PRICE_REDUCE = 0
+        FONT_VOL_SIZE  = 10
+        EPD_MLT_ROW_Y = 80
+        EPD_MLT_NUM = 2
+    ########## 2.7 Portait 3-Rows ########
+    else:
+        config['display']['orientation'] = 0
+        LAY_A = round(EPD_WIDTH*1/3)
+        LAY_B = round(EPD_WIDTH*2/3)
+        LAY_C = round(EPD_WIDTH*0/3)
+        EPD_TIME_Y    = 0
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 12
+        FONT_TAIL_SIZE = 12
+        EPD_NAME_X   = LAY_A
+        EPD_NAME_Y   = 15
+        EPD_NAME_W   = LAY_B
+        EPD_NAME_A   = 'C'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = 8
+        EPD_SPARK_X   = LAY_A - 25
+        EPD_SPARK_Y   = 10
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 10
+        EPD_DAY_X   = LAY_A
+        EPD_DAY_Y   = 15
+        EPD_DAY_W   = LAY_B
+        EPD_DAY_A   = 'C'
+        EPD_VOL_X   = LAY_A
+        EPD_VOL_Y   = 45
+        EPD_VOL_W   = LAY_B
+        EPD_VOL_A   = 'C'
+        LAYOUT_ICON_W = 56
+        LAYOUT_ICON_H = 56
+        EPD_PRICE_X  = 0
+        EPD_PRICE_Y  = -65
+        FONT_PRICE_SIZE = 20
+        FONT_PRICE_REDUCE = 2
+        FONT_VOL_SIZE  = 10
+        EPD_MLT_ROW_Y = 85
+        EPD_MLT_NUM = 3
+        config['display']['showvolume'] = False
+        config['display']['showrank'] = False
+    ######################
+
+    font_info_name = "whitrabt"
+    font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_DATE_SIZE)
+    font_tail = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_TAIL_SIZE)
+    font_vol = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_VOL_SIZE)
+
+    return config
+ ######################
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -608,6 +948,10 @@ def main():
         with open(configfile) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         logging.info(config)
+
+        # SETUP DISPLAY
+        config = setupdisplay(config)
+        
         config['display']['orientation']=int(config['display']['orientation'])
         staticcoins=config['ticker']['currency']
 #       Get the buttons for 2.7in EPD set up
