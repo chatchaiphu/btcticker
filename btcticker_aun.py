@@ -759,7 +759,7 @@ def setupdisplay(config):
     global font_vol
 
     EPD_DISP_TYPE = config['display']['disptype']
-    if EPD_DISP_TYPE==4 :
+    if EPD_DISP_TYPE==3 :
         if config['display']['orientation'] != 0 and config['display']['orientation'] != 180 :
             config['display']['orientation'] = 0
     else :
@@ -808,44 +808,8 @@ def setupdisplay(config):
         FONT_VOL_SIZE  = 12
         EPD_MLT_ROW_Y = 0
         EPD_MLT_NUM = 1
-    ######### 2.7 ########
-    elif EPD_DISP_TYPE == 2:
-        LAY_A = round(EPD_WIDTH*1/3)
-        LAY_B = round(EPD_WIDTH*2/3)
-        LAY_C = round(EPD_WIDTH*0/3)
-        LAYOUT_ICON_W = 100
-        LAYOUT_ICON_H = 100
-        EPD_TIME_Y    = 3
-        EPD_SPARK_X   = 45
-        EPD_SPARK_Y   = 10
-        EPD_ICON_X   = 0
-        EPD_ICON_Y   = 10
-        EPD_DAY_X   = LAY_A
-        EPD_DAY_Y   = 60
-        EPD_DAY_W   = LAY_B
-        EPD_DAY_A   = 'C'
-        EPD_VOL_X   = LAY_A
-        EPD_VOL_Y   = 75
-        EPD_VOL_W   = LAY_B
-        EPD_VOL_A   = 'C'
-        EPD_NAME_X   = 3
-        EPD_NAME_Y   = 2
-        EPD_NAME_W   = LAY_A
-        EPD_NAME_A   = 'L'
-        EPD_RANK_X   = 0
-        EPD_RANK_Y   = 2
-        EPD_PRICE_X  = 0
-        EPD_PRICE_Y  = 55
-        EPD_IP_Y     = EPD_HEIGHT
-        FONT_DATE_SIZE = 14
-        FONT_TAIL_SIZE = 12
-        FONT_PRICE_SIZE = 50
-        FONT_PRICE_REDUCE = 15
-        FONT_VOL_SIZE  = 14
-        EPD_MLT_ROW_Y = 0
-        EPD_MLT_NUM = 1
     ######### 2.7 2-Rows ########
-    elif EPD_DISP_TYPE == 3:
+    elif EPD_DISP_TYPE == 2:
         LAY_A = round(EPD_WIDTH*1/4)
         LAY_B = round(EPD_WIDTH*1/4)
         LAY_C = round(EPD_WIDTH*2/4)
@@ -881,44 +845,80 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 80
         EPD_MLT_NUM = 2
     ########## 2.7 Portait 3-Rows ########
-    else:
+    elif EPD_DISP_TYPE == 3:
         config['display']['orientation'] = 0
+        #config['display']['showvolume'] = False
+        #config['display']['showrank'] = False
         LAY_A = round(EPD_WIDTH*1/3)
         LAY_B = round(EPD_WIDTH*2/3)
         LAY_C = round(EPD_WIDTH*0/3)
         EPD_TIME_Y    = 0
         EPD_IP_Y     = EPD_HEIGHT
-        FONT_DATE_SIZE = 12
-        FONT_TAIL_SIZE = 12
-        EPD_NAME_X   = LAY_A
-        EPD_NAME_Y   = 15
+        FONT_DATE_SIZE = 10
+        FONT_TAIL_SIZE = 10
+        EPD_NAME_X   = 0
+        EPD_NAME_Y   = 60
         EPD_NAME_W   = LAY_B
-        EPD_NAME_A   = 'C'
+        EPD_NAME_A   = 'L'
         EPD_RANK_X   = 0
         EPD_RANK_Y   = 8
         EPD_SPARK_X   = LAY_A - 25
-        EPD_SPARK_Y   = 10
+        EPD_SPARK_Y   = 5
         EPD_ICON_X   = 0
-        EPD_ICON_Y   = 10
+        EPD_ICON_Y   = 5
         EPD_DAY_X   = LAY_A
-        EPD_DAY_Y   = 15
+        EPD_DAY_Y   = 50
         EPD_DAY_W   = LAY_B
-        EPD_DAY_A   = 'C'
+        EPD_DAY_A   = 'R'
         EPD_VOL_X   = LAY_A
-        EPD_VOL_Y   = 45
+        EPD_VOL_Y   = 60
         EPD_VOL_W   = LAY_B
-        EPD_VOL_A   = 'C'
-        LAYOUT_ICON_W = 56
-        LAYOUT_ICON_H = 56
+        EPD_VOL_A   = 'R'
+        LAYOUT_ICON_W = 58
+        LAYOUT_ICON_H = 58
         EPD_PRICE_X  = 0
-        EPD_PRICE_Y  = -65
+        EPD_PRICE_Y  = -52
         FONT_PRICE_SIZE = 20
         FONT_PRICE_REDUCE = 2
         FONT_VOL_SIZE  = 10
         EPD_MLT_ROW_Y = 85
         EPD_MLT_NUM = 3
-        config['display']['showvolume'] = False
-        config['display']['showrank'] = False
+    ######### 2.7 ########
+    else :
+        LAY_A = round(EPD_WIDTH*1/3)
+        LAY_B = round(EPD_WIDTH*2/3)
+        LAY_C = round(EPD_WIDTH*0/3)
+        LAYOUT_ICON_W = 100
+        LAYOUT_ICON_H = 100
+        EPD_TIME_Y    = 3
+        EPD_SPARK_X   = 45
+        EPD_SPARK_Y   = 10
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 10
+        EPD_DAY_X   = LAY_A
+        EPD_DAY_Y   = 60
+        EPD_DAY_W   = LAY_B
+        EPD_DAY_A   = 'C'
+        EPD_VOL_X   = LAY_A
+        EPD_VOL_Y   = 75
+        EPD_VOL_W   = LAY_B
+        EPD_VOL_A   = 'C'
+        EPD_NAME_X   = 3
+        EPD_NAME_Y   = 2
+        EPD_NAME_W   = LAY_A
+        EPD_NAME_A   = 'L'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = 2
+        EPD_PRICE_X  = 0
+        EPD_PRICE_Y  = 55
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 14
+        FONT_TAIL_SIZE = 12
+        FONT_PRICE_SIZE = 50
+        FONT_PRICE_REDUCE = 15
+        FONT_VOL_SIZE  = 14
+        EPD_MLT_ROW_Y = 0
+        EPD_MLT_NUM = 1
     ######################
 
     font_info_name = "whitrabt"
