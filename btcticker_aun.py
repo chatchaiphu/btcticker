@@ -9,7 +9,8 @@ import logging
 import RPi.GPIO as GPIO
 #from waveshare_epd import epd2in7 as epdd
 #from waveshare_epd import epd2in13b_V3 as epdd
-from waveshare_epd import epd2in7b_V2 as epdd
+#from waveshare_epd import epd2in7b_V2 as epdd
+from waveshare_epd import epd3in7 as epdd
 import time
 import requests
 import urllib, json
@@ -30,143 +31,6 @@ configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.ya
 #font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 button_pressed = 0
-
-#EPD_DISP_TYPE = 3
-########## 2.13 ########
-#if EPD_DISP_TYPE==1:
-#    EPD_HEIGHT = epdd.EPD().width
-#    EPD_WIDTH  = epdd.EPD().height
-#    LAY_A = round(EPD_WIDTH*1/3)
-#    LAY_B = round(EPD_WIDTH*2/3)
-#    LAY_C = round(EPD_WIDTH*2/3)
-#    LAYOUT_ICON_W = 60
-#    LAYOUT_ICON_H = 60
-#    EPD_TIME_Y    = 3
-#    EPD_SPARK_X   = 45
-#    EPD_SPARK_Y   = 10
-#    EPD_ICON_X   = 0
-#    EPD_ICON_Y   = 15
-#    EPD_DAY_X   = 0
-#    EPD_DAY_Y   = 55
-#    EPD_VOL_X   = 0
-#    EPD_VOL_Y   = 65
-#    EPD_NAME_X   = 0
-#    EPD_NAME_Y   = 3
-#    EPD_RANK_X   = 0
-#    EPD_RANK_Y   = EPD_HEIGHT
-#    EPD_PRICE_X  = 0
-#    EPD_PRICE_Y  = 55
-#    EPD_IP_Y     = EPD_HEIGHT
-#    FONT_DATE_SIZE = 12
-#    FONT_TAIL_SIZE = 9
-#    FONT_PRICE_SIZE = 30
-#    FONT_PRICE_REDUCE = 5
-#    FONT_VOL_SIZE  = 12
-#    EPD_MLT_ROW_Y = 0
-#    EPD_MLT_NUM = 1
-########## 2.7 ########
-#elif EPD_DISP_TYPE == 2:
-#    EPD_HEIGHT = epdd.EPD().width
-#    EPD_WIDTH  = epdd.EPD().height
-#    LAY_A = round(EPD_WIDTH*1/3)
-#    LAY_B = round(EPD_WIDTH*2/3)
-#    LAY_C = round(EPD_WIDTH*2/3)
-#    LAYOUT_ICON_W = 100
-#    LAYOUT_ICON_H = 100
-#    EPD_TIME_Y    = 3
-#    EPD_SPARK_X   = 45
-#    EPD_SPARK_Y   = 10
-#    EPD_ICON_X   = 0
-#    EPD_ICON_Y   = 10
-#    EPD_DAY_X   = 0
-#    EPD_DAY_Y   = 60
-#    EPD_VOL_X   = 0
-#    EPD_VOL_Y   = 75
-#    EPD_NAME_X   = 3
-#    EPD_NAME_Y   = 2
-#    EPD_RANK_X   = 0
-#    EPD_RANK_Y   = 2
-#    EPD_PRICE_X  = 0
-#    EPD_PRICE_Y  = 55
-#    EPD_IP_Y     = EPD_HEIGHT
-#    FONT_DATE_SIZE = 14
-#    FONT_TAIL_SIZE = 12
-#    FONT_PRICE_SIZE = 50
-#    FONT_PRICE_REDUCE = 15
-#    FONT_VOL_SIZE  = 14
-#    EPD_MLT_ROW_Y = 0
-#    EPD_MLT_NUM = 1
-########## 2.7 2-Rows ########
-#elif EPD_DISP_TYPE == 3:
-#    EPD_HEIGHT = epdd.EPD().width
-#    EPD_WIDTH  = epdd.EPD().height
-#    LAY_A = round(EPD_WIDTH*1/4)
-#    LAY_B = round(EPD_WIDTH*1/4)
-#    LAY_C = round(EPD_WIDTH*2/4)
-#    EPD_TIME_Y    = 3
-#    EPD_IP_Y     = EPD_HEIGHT
-#    FONT_DATE_SIZE = 12
-#    FONT_TAIL_SIZE = 12
-#    EPD_NAME_X   = LAY_A + 0
-#    EPD_NAME_Y   = 15
-#    EPD_RANK_X   = 0
-#    EPD_RANK_Y   = 80
-#    EPD_SPARK_X   = 45
-#    EPD_SPARK_Y   = 10
-#    EPD_ICON_X   = 0
-#    EPD_ICON_Y   = 10
-#    EPD_DAY_X   = 0
-#    EPD_DAY_Y   = 30
-#    EPD_VOL_X   = 0
-#    EPD_VOL_Y   = 45
-#    LAYOUT_ICON_W = 64
-#    LAYOUT_ICON_H = 64
-#    EPD_PRICE_X  = 0
-#    EPD_PRICE_Y  = -12
-#    FONT_PRICE_SIZE = 30
-#    FONT_PRICE_REDUCE = 2
-#    FONT_VOL_SIZE  = 10
-#    EPD_MLT_ROW_Y = 80
-#    EPD_MLT_NUM = 2
-########### 2.7 2-Rows ########
-#else:
-#    EPD_HEIGHT = epdd.EPD().width
-#    EPD_WIDTH  = epdd.EPD().height
-#    LAY_A = round(EPD_WIDTH*1/4)
-#    LAY_B = round(EPD_WIDTH*1/4)
-#    LAY_C = round(EPD_WIDTH*2/4)
-#    EPD_TIME_Y    = 3
-#    EPD_IP_Y     = EPD_HEIGHT
-#    FONT_DATE_SIZE = 12
-#    FONT_TAIL_SIZE = 12
-#    EPD_NAME_X   = LAY_A + 0
-#    EPD_NAME_Y   = 15
-#    EPD_RANK_X   = 0
-#    EPD_RANK_Y   = 80
-#    EPD_SPARK_X   = 45
-#    EPD_SPARK_Y   = 10
-#    EPD_ICON_X   = 0
-#    EPD_ICON_Y   = 10
-#    EPD_DAY_X   = 0
-#    EPD_DAY_Y   = 30
-#    EPD_VOL_X   = 0
-#    EPD_VOL_Y   = 45
-#    LAYOUT_ICON_W = 64
-#    LAYOUT_ICON_H = 64
-#    EPD_PRICE_X  = 0
-#    EPD_PRICE_Y  = -12
-#    FONT_PRICE_SIZE = 30
-#    FONT_PRICE_REDUCE = 2
-#    FONT_VOL_SIZE  = 10
-#    EPD_MLT_ROW_Y = 80
-#    EPD_MLT_NUM = 1
-#######################
-#
-#font_date = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_DATE_SIZE)
-#font_tail = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_TAIL_SIZE)
-#font_info_name = "whitrabt"
-#font_vol = ImageFont.truetype(os.path.join(fontdir,'whitrabt.ttf'),FONT_VOL_SIZE)
-
 
 def internet(hostname="google.com"):
     """
@@ -248,8 +112,8 @@ def getData(config, whichcoin, fiat, other):
     logging.debug(geckourlhistorical)
     timeseriesstack = []
     for x in range(0, num_retries):
-        rawtimeseries, connectfail=  getgecko(geckourlhistorical)
-        if connectfail== True:
+        rawtimeseries, connectfail=getgecko(geckourlhistorical)
+        if connectfail==True:
             pass
         else:
             logging.debug("Got price for the last "+str(days_ago)+" days from CoinGecko")
@@ -503,7 +367,10 @@ def updateDisplay(config, other):
 
             #image.paste(sparkbitmap,(80,40))
             #image2.paste(sparkbitmap,(LAY_A + LAY_B, EPD_SPARK_Y + EPD_OFFSET_Y))
-            image2.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y + EPD_OFFSET_Y))
+            if EPD_COLOR_NUM==2:
+                image2.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y + EPD_OFFSET_Y))
+            else:
+                image.paste(sparkbitmap,(EPD_SPARK_X, EPD_SPARK_Y + EPD_OFFSET_Y))
 
             tokenimage.thumbnail((LAYOUT_ICON_W, LAYOUT_ICON_H), Image.ANTIALIAS)
             image.paste(tokenimage, (EPD_ICON_X, EPD_ICON_Y + EPD_OFFSET_Y))
@@ -526,7 +393,10 @@ def updateDisplay(config, other):
                 #draw2.text((EPD_NAME_X + w, EPD_NAME_Y + EPD_OFFSET_Y), "(" + str("%d" % other['market_cap_rank']) + ")", font=font_date, fill = 0)
                 #w, h = draw.textsize("(" + str("%d" % other['market_cap_rank']) + ")", font=font_tail)
                 #draw2.text((EPD_RANK_X, EPD_RANK_Y + EPD_OFFSET_Y - h), "(" + str("%d" % other['market_cap_rank']) + ")", font=font_tail, fill = 0)
-                drawtextalign(draw2, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_date, fill=0, align=EPD_NAME_A)
+                if EPD_COLOR_NUM==2:
+                    drawtextalign(draw2, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
+                else:
+                    drawtextalign(draw, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
 
             #draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
 
@@ -544,7 +414,10 @@ def updateDisplay(config, other):
         local_ip = socket.gethostbyname(socket.gethostname()+".local")
         print(local_ip)
         w, h = draw.textsize(local_ip, font=font_tail)
-        draw2.text((EPD_WIDTH-w, EPD_IP_Y-h), local_ip, font=font_tail, fill=0)
+        if EPD_COLOR_NUM==2:
+            draw2.text((EPD_WIDTH-w, EPD_IP_Y-h), local_ip, font=font_tail, fill=0)
+        else:
+            draw.text((EPD_WIDTH-w, EPD_IP_Y-h), local_ip, font=font_tail, fill=0)
         
 
     if config['display']['orientation'] == 270 or config['display']['orientation'] == 180 :
@@ -577,8 +450,12 @@ def display_image(img,img2):
     epd = epdd.EPD()
     #epd.Init_4Gray()
     #epd.display_4Gray(epd.getbuffer_4Gray(img))
-    epd.init()
-    epd.display(epd.getbuffer(img), epd.getbuffer(img2))
+    #epd.init()
+    #epd.display(epd.getbuffer(img), epd.getbuffer(img2))
+
+    epd.init(0)
+    epd.display_4Gray(epd.getbuffer_4Gray(img))
+
     epd.sleep()
     thekeys=initkeys()
 #   Have to remove and add key events to make them work again
@@ -717,6 +594,7 @@ def gettrending(config):
 def setupdisplay(config):
     print("SETUP DISPLAY")
     global EPD_DISP_TYPE
+    global EPD_DISP_LAYOUT
     global EPD_HEIGHT
     global EPD_WIDTH
     global LAY_A
@@ -757,9 +635,11 @@ def setupdisplay(config):
     global font_tail
     global font_info_name
     global font_vol
+    global EPD_COLOR_NUM
 
     EPD_DISP_TYPE = config['display']['disptype']
-    if EPD_DISP_TYPE==3 :
+    EPD_DISP_LAYOUT = config['display']['layout']
+    if EPD_DISP_LAYOUT==3 or EPD_DISP_LAYOUT==4 :
         if config['display']['orientation'] != 0 and config['display']['orientation'] != 180 :
             config['display']['orientation'] = 0
     else :
@@ -773,7 +653,7 @@ def setupdisplay(config):
         EPD_HEIGHT = epdd.EPD().width
         EPD_WIDTH  = epdd.EPD().height
 
-    if EPD_DISP_TYPE==1:
+    if EPD_DISP_LAYOUT==1:
         LAY_A = round(EPD_WIDTH*1/3)
         LAY_B = round(EPD_WIDTH*2/3)
         LAY_C = round(EPD_WIDTH*0/3)
@@ -808,8 +688,9 @@ def setupdisplay(config):
         FONT_VOL_SIZE  = 12
         EPD_MLT_ROW_Y = 0
         EPD_MLT_NUM = 1
+        EPD_COLOR_NUM = 2
     ######### 2.7 2-Rows ########
-    elif EPD_DISP_TYPE == 2:
+    elif EPD_DISP_LAYOUT== 2:
         LAY_A = round(EPD_WIDTH*1/4)
         LAY_B = round(EPD_WIDTH*1/4)
         LAY_C = round(EPD_WIDTH*2/4)
@@ -844,8 +725,9 @@ def setupdisplay(config):
         FONT_VOL_SIZE  = 10
         EPD_MLT_ROW_Y = 80
         EPD_MLT_NUM = 2
+        EPD_COLOR_NUM = 2
     ########## 2.7 Portait 3-Rows ########
-    elif EPD_DISP_TYPE == 3:
+    elif EPD_DISP_LAYOUT== 3:
         config['display']['orientation'] = 0
         #config['display']['showvolume'] = False
         #config['display']['showrank'] = False
@@ -883,6 +765,47 @@ def setupdisplay(config):
         FONT_VOL_SIZE  = 10
         EPD_MLT_ROW_Y = 85
         EPD_MLT_NUM = 3
+        EPD_COLOR_NUM = 2
+    ########## 3.7 Portait 3-Rows ########
+    elif EPD_DISP_LAYOUT== 4:
+        config['display']['orientation'] = 0
+        #config['display']['showvolume'] = False
+        #config['display']['showrank'] = False
+        LAY_A = round(EPD_WIDTH*1/3)
+        LAY_B = round(EPD_WIDTH*2/3)
+        LAY_C = round(EPD_WIDTH*0/3)
+        EPD_TIME_Y    = 0
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 15
+        FONT_TAIL_SIZE = 10
+        EPD_NAME_X   = 0
+        EPD_NAME_Y   = 0
+        EPD_NAME_W   = LAY_A
+        EPD_NAME_A   = 'L'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = 8
+        EPD_SPARK_X   = LAY_A
+        EPD_SPARK_Y   = 10
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 5
+        EPD_DAY_X   = LAY_A
+        EPD_DAY_Y   = 48
+        EPD_DAY_W   = LAY_B
+        EPD_DAY_A   = 'R'
+        EPD_VOL_X   = LAY_A
+        EPD_VOL_Y   = 60
+        EPD_VOL_W   = LAY_B
+        EPD_VOL_A   = 'R'
+        LAYOUT_ICON_W = 90
+        LAYOUT_ICON_H = 90
+        EPD_PRICE_X  = 35
+        EPD_PRICE_Y  = -154
+        FONT_PRICE_SIZE = 31
+        FONT_PRICE_REDUCE = 2
+        FONT_VOL_SIZE  = 12
+        EPD_MLT_ROW_Y = 95
+        EPD_MLT_NUM = 5
+        EPD_COLOR_NUM = 1
     ######### 2.7 ########
     else :
         LAY_A = round(EPD_WIDTH*1/3)
@@ -919,6 +842,7 @@ def setupdisplay(config):
         FONT_VOL_SIZE  = 14
         EPD_MLT_ROW_Y = 0
         EPD_MLT_NUM = 1
+        EPD_COLOR_NUM = 2
     ######################
 
     font_info_name = "whitrabt"

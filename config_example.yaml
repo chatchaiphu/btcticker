@@ -2,14 +2,20 @@ display:
   cycle: true
   inverted: false
   orientation: 90
-  trendingmode: false
-  showvolume: false
-  showrank: false
+  trendingmode: true
+  showvolume: true
+  showrank: true
   24h: true
+  showip: true
+  disptype: 3in7
+  layout: 4
 ticker:
-  currency: bitcoin,ethereum,cardano
+  currency2: bitcoin
+  currency3: bitcoin,ethereum,dogecoin,shiba-inu,litecoin,cardano,gala,pancakeswap
+  currency: bitcoin,shiba-inu,ethereum,terra-luna,gala,dogecoin,cardano,litecoin
   exchange: default
-  fiatcurrency: usd,eur,gbp
+  fiatcurrency2: usd,eur,gbp
+  fiatcurrency: usd,usd,usd,usd,usd,usd
   sparklinedays: 1 
   updatefrequency: 300
 
