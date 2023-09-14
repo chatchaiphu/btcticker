@@ -766,7 +766,7 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 85
         EPD_MLT_NUM = 3
         EPD_COLOR_NUM = 2
-    ########## 3.7 Portait 3-Rows ########
+    ########## 3.7 Portait 5-Rows ########
     elif EPD_DISP_LAYOUT== 4:
         config['display']['orientation'] = 0
         #config['display']['showvolume'] = False
@@ -806,7 +806,47 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 95
         EPD_MLT_NUM = 5
         EPD_COLOR_NUM = 1
-    ######### 2.7 ########
+    ########## 3.7 Landscape 2-Rows ########
+    elif EPD_DISP_LAYOUT== 5:
+        config['display']['orientation'] = 90
+        #config['display']['showvolume'] = False
+        #config['display']['showrank'] = False
+        LAY_A = round(EPD_WIDTH*1/3)
+        LAY_B = round(EPD_WIDTH*2/3)
+        LAY_C = round(EPD_WIDTH*0/3)
+        EPD_TIME_Y    = 0
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 18
+        FONT_TAIL_SIZE = 10
+        EPD_NAME_X   = 0
+        EPD_NAME_Y   = 0
+        EPD_NAME_W   = LAY_A
+        EPD_NAME_A   = 'L'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = 8
+        EPD_SPARK_X   = LAY_A
+        EPD_SPARK_Y   = 10
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 5
+        EPD_DAY_X   = LAY_A
+        EPD_DAY_Y   = 20
+        EPD_DAY_W   = LAY_B
+        EPD_DAY_A   = 'R'
+        EPD_VOL_X   = LAY_A
+        EPD_VOL_Y   = 35
+        EPD_VOL_W   = LAY_B
+        EPD_VOL_A   = 'R'
+        LAYOUT_ICON_W = 90
+        LAYOUT_ICON_H = 90
+        EPD_PRICE_X  = 0
+        EPD_PRICE_Y  = -60
+        FONT_PRICE_SIZE = 41
+        FONT_PRICE_REDUCE = 2
+        FONT_VOL_SIZE  = 15
+        EPD_MLT_ROW_Y = 95
+        EPD_MLT_NUM = 3
+        EPD_COLOR_NUM = 1
+     ######### 2.7 ########
     else :
         LAY_A = round(EPD_WIDTH*1/3)
         LAY_B = round(EPD_WIDTH*2/3)
