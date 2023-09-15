@@ -98,93 +98,126 @@ def getData(config, whichcoin, fiat, other):
     """
     The function to grab the data (TO DO: need to test properly)
     """
-
     sleep_time = 10
     num_retries = 5
-    #whichcoin,fiat=configtocoinandfiat(config)
-    logging.info("Getting Data")
-    days_ago=int(config['ticker']['sparklinedays'])
-    endtime = int(time.time())
-    starttime = endtime - 60*60*24*days_ago
-    starttimeseconds = starttime
-    endtimeseconds = endtime
-    geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
-    logging.debug(geckourlhistorical)
-    timeseriesstack = []
+    # whichcoin,fiat=configtocoinandfiat(config)
+
     for x in range(0, num_retries):
-        rawtimeseries, connectfail=getgecko(geckourlhistorical)
-        if connectfail==True:
+        logging.info("Getting Data")
+        """
+        days_ago = int(config["ticker"]["sparklinedays"])
+        endtime = int(time.time())
+        starttime = endtime - 60 * 60 * 24 * days_ago
+        starttimeseconds = starttime
+        endtimeseconds = endtime
+        geckourlhistorical = (
+            "https://api.coingecko.com/api/v3/coins/"
+            + whichcoin
+            + "/market_chart/range?vs_currency="
+            + fiat
+            + "&from="
+            + str(starttimeseconds)
+            + "&to="
+            + str(endtimeseconds)
+        )
+        rawtimeseries, connectfail = getgecko(geckourlhistorical)
+        logging.debug(rawtimeseries)
+        if connectfail == True:
             pass
         else:
-            logging.debug("Got price for the last "+str(days_ago)+" days from CoinGecko")
-            timeseriesarray = rawtimeseries['prices']
-            length=len (timeseriesarray)
-            i=0
+            logging.debug("Got price for the last " + str(days_ago) + " days from CoinGecko")
+            timeseriesarray = rawtimeseries["prices"]
+            length = len(timeseriesarray)
+            i = 0
+            timeseriesstack = []
             while i < length:
-                timeseriesstack.append(float (timeseriesarray[i][1]))
-                i+=1
-            # A little pause before hiting the api again
-            time.sleep(1)
-            # Get the price
-        if config['ticker']['exchange']=='default':
-            geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
+                timeseriesstack.append(float(timeseriesarray[i][1]))
+                i += 1
+        # A little pause before hiting the api again
+        time.sleep(1)
+        """
+        timeseriesstack = []
+        # Get the price
+        if config["ticker"]["exchange"] == "default":
+            geckourl = (
+                "https://api.coingecko.com/api/v3/coins/markets"
+                + "?vs_currency=" + fiat
+                + "&ids=" + whichcoin
+                + "&sparkline=" + "true"
+            )
             logging.debug(geckourl)
-            rawlivecoin , connectfail = getgecko(geckourl)
-            if connectfail==True:
+            rawlivecoin, connectfail = getgecko(geckourl)
+            if connectfail == True:
                 pass
             else:
                 logging.debug(rawlivecoin[0])
                 liveprice = rawlivecoin[0]
-                pricenow= float(liveprice['current_price'])
-                alltimehigh = float(liveprice['ath'])
+                pricenow = float(liveprice["current_price"])
+                alltimehigh = float(liveprice["ath"])
                 # Quick workaround for error being thrown for obscure coins. TO DO: Examine further
                 try:
-                    other['market_cap_rank'] = int(liveprice['market_cap_rank'])
+                    other["market_cap_rank"] = int(liveprice["market_cap_rank"])
                 except:
-                    config['display']['showrank']=False
-                    other['market_cap_rank'] = 0
-                other['volume'] = float(liveprice['total_volume'])
-                timeseriesstack.append(pricenow)
-                if pricenow>alltimehigh:
-                    other['ATH']=True
+                    config["display"]["showrank"] = False
+                    other["market_cap_rank"] = 0
+                other["volume"] = float(liveprice["total_volume"])
+                if pricenow > alltimehigh:
+                    other["ATH"] = True
                 else:
-                    other['ATH']=False
+                    other["ATH"] = False
+                days_ago = 7 # By default sparkline from api
+                logging.debug("Got price for the last " + str(days_ago) + " days from CoinGecko")
+                timeseriesstack = liveprice["sparkline_in_7d"]["price"]
+                timeseriesstack.append(pricenow)
         else:
-            geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
+            geckourl = (
+                "https://api.coingecko.com/api/v3/exchanges/"
+                + config["ticker"]["exchange"] + "/tickers"
+                + "?coin_ids=" + whichcoin
+                + "&include_exchange_logo=false"
+            )
             logging.debug(geckourl)
             rawlivecoin, connectfail = getgecko(geckourl)
-            if connectfail==True:
+            if connectfail == True:
                 pass
             else:
-                theindex=-1
-                upperfiat=fiat.upper()
-                for i in range (len(rawlivecoin['tickers'])):
-                    target=rawlivecoin['tickers'][i]['target']
-                    if target==upperfiat:
-                        theindex=i
-                        logging.debug("Found "+upperfiat+" at index " + str(i))
-        #       if UPPERFIAT is not listed as a target theindex==-1 and it is time to go to sleep
-                if  theindex==-1:
-                    logging.error("The exchange is not listing in "+upperfiat+". Misconfigured - shutting down script")
+                theindex = -1
+                upperfiat = fiat.upper()
+                for i in range(len(rawlivecoin["tickers"])):
+                    target = rawlivecoin["tickers"][i]["target"]
+                    if target == upperfiat:
+                        theindex = i
+                        logging.debug("Found " + upperfiat + " at index " + str(i))
+                #       if UPPERFIAT is not listed as a target theindex==-1 and it is time to go to sleep
+                if theindex == -1:
+                    logging.error(
+                        "The exchange is not listing in "
+                        + upperfiat
+                        + ". Misconfigured - shutting down script"
+                    )
                     sys.exit()
-                liveprice= rawlivecoin['tickers'][theindex]
-                pricenow= float(liveprice['last'])
-                other['market_cap_rank'] = 0 # For non-default the Rank does not show in the API, so leave blank
-                other['volume'] = float(liveprice['converted_volume']['usd'])
-                alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
+                liveprice = rawlivecoin["tickers"][theindex]
+                pricenow = float(liveprice["last"])
+                other["market_cap_rank"] = 0  # For non-default the Rank does not show in the API, so leave blank
+                other["volume"] = float(liveprice["converted_volume"]["usd"])
+                alltimehigh = 1000000.0  # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
                 logging.debug("Got Live Data From CoinGecko")
                 timeseriesstack.append(pricenow)
-                if pricenow>alltimehigh:
-                    other['ATH']=True
+                if pricenow > alltimehigh:
+                    other["ATH"] = True
                 else:
-                    other['ATH']=False
-        if connectfail==True:
-            message="Trying again in ", sleep_time, " seconds"
+                    other["ATH"] = False
+        if connectfail == True:
+            message = "Trying again in ", sleep_time, " seconds"
             logging.warn(message)
             time.sleep(sleep_time)  # wait before trying to fetch the data again
             sleep_time *= 2  # exponential backoff
         else:
             break
+
+    logging.debug("+++++++++++++++++++++++++++++++")
+    logging.debug(timeseriesstack)
+
     return timeseriesstack, other
 
 def beanaproblem(message):
