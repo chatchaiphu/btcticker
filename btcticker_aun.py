@@ -220,6 +220,74 @@ def getData(config, whichcoin, fiat, other):
 
     return timeseriesstack, other
 
+def getDatas(config, whichcoin, fiat, other):
+    """
+    The function to grab the data (TO DO: need to test properly)
+    """
+
+    sleep_time = 10
+    num_retries = 5
+    # whichcoin,fiat=configtocoinandfiat(config)
+    others = []
+    timeseriesstacks = []
+
+    for x in range(0, num_retries):
+        logging.info("Getting Data")
+        # Get the price
+        if config["ticker"]["exchange"] == "default":
+            geckourl = (
+                "https://api.coingecko.com/api/v3/coins/markets"
+                + "?vs_currency=" + fiat
+                + "&ids=" + whichcoin
+                + "&sparkline=" + "true"
+            )
+            logging.debug(geckourl)
+            rawlivecoin, connectfail = getgecko(geckourl)
+            if connectfail == True:
+                pass
+            else:
+                len_rawlivecoin = len(rawlivecoin)
+                #logging.debug(rawlivecoin)
+                #logging.debug(len_rawlivecoin)
+
+                for i in range(0, len_rawlivecoin):
+                    liveprice = rawlivecoin[i]
+                    pricenow = float(liveprice["current_price"])
+                    alltimehigh = float(liveprice["ath"])
+                    # Quick workaround for error being thrown for obscure coins. TO DO: Examine further
+                    other = {}
+                    timeseriesstack = []
+                    other["id"] = liveprice["id"]
+                    other["symbol"] = liveprice["symbol"]
+                    other["name"] = liveprice["name"]
+                    try:
+                        other["market_cap_rank"] = int(liveprice["market_cap_rank"])
+                    except:
+                        config["display"]["showrank"] = False
+                        other["market_cap_rank"] = 0
+                    other["volume"] = float(liveprice["total_volume"])
+                    if pricenow > alltimehigh:
+                        other["ATH"] = True
+                    else:
+                        other["ATH"] = False
+                    days_ago = 7 # By default sparkline from api
+                    logging.debug("Got price for the last " + str(days_ago) + " days from CoinGecko")
+                    timeseriesstack = liveprice["sparkline_in_7d"]["price"]
+                    timeseriesstack.append(pricenow)
+                    others.append(other)
+                    timeseriesstacks.append(timeseriesstack)
+        if connectfail == True:
+            message = "Trying again in ", sleep_time, " seconds"
+            logging.warn(message)
+            time.sleep(sleep_time)  # wait before trying to fetch the data again
+            sleep_time *= 2  # exponential backoff
+        else:
+            break
+
+    logging.debug("+++++++++++++++++++++++++++++++")
+
+    return timeseriesstacks, others
+
 def beanaproblem(message):
 #   A visual cue that the wheels have fallen off
     thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
@@ -297,18 +365,30 @@ def updateDisplay(config, other):
     draw2 = ImageDraw.Draw(image2)
 
     whichcoins = currencystringtolist(config['ticker']['currency'])[:EPD_MLT_NUM]
-    faits = currencystringtolist(config['ticker']['fiatcurrency'])[:EPD_MLT_NUM]
+    #faits = currencystringtolist(config['ticker']['fiatcurrency'])[:EPD_MLT_NUM]
+    faits = currencystringtolist(config['ticker']['fiatcurrency'])
     print(whichcoins)
     #print(fiats)
     #whichcoin, fiat = configtocoinandfiat(config)
+    coins = ','.join(whichcoins)
+    print(coins)
+
+    fiat = faits[0]
+    pricestacks, others = getDatas(config, coins, fiat, other)
+    logging.debug(pricestacks)
+    logging.debug(others)
 
     for idx in range(EPD_MLT_NUM):
         whichcoin = whichcoins[idx]
-        fiat = faits[idx]
         
         EPD_OFFSET_Y = idx * EPD_MLT_ROW_Y
 
-        pricestack, ATH = getData(config, whichcoin, fiat, other)
+        whichcoin = whichcoins[idx]
+        fiat = faits[0]
+        #pricestack, other = getData(config, whichcoin, fiat, other)
+        whichcoin = others[idx]["id"]
+        pricestack = pricestacks[idx]
+        other = others[idx]
         makeSpark(pricestack, whichcoin, fiat)
 
         #with open(configfile) as f:
