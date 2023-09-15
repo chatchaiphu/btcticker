@@ -697,18 +697,28 @@ def configtocoinandfiat(config, idx=0):
 
 def gettrending(config):
     print("ADD TRENDING")
-    coinlist=config['ticker']['currency']
-    url="https://api.coingecko.com/api/v3/search/trending"
-#   Cycle must be true if trending mode is on
-    config['display']['cycle']=True
+    coinlist = config["ticker"]["currency"]
+    url = "https://api.coingecko.com/api/v3/search/trending"
+    #   Cycle must be true if trending mode is on
+    config["display"]["cycle"] = True
     trendingcoins = requests.get(url, headers=headers).json()
-    for i in range(0,(len(trendingcoins['coins']))):
-        print(trendingcoins['coins'][i]['item']['id'])
-        coinlist+=","+str(trendingcoins['coins'][i]['item']['id'])
-    config['ticker']['currency']=coinlist
+    count = 0
+    max_count = int(config["display"]["trendingmodenumber"])
+    for i in range(0, (len(trendingcoins["coins"]))):
+        print(trendingcoins["coins"][i]["item"]["id"])
+        coin_id = str(trendingcoins["coins"][i]["item"]["id"])
+        if coinlist == "":
+            coinlist += coin_id
+        else:
+            coinlist += "," + coin_id
+        count += 1
+        if count >= max_count:
+            break
+    config["ticker"]["currency"] = coinlist
+    config["display"]["trendingmodenumber"] = str(count)
     return config
 
-def getcoinsbymktcap(config):
+def getranking(config):
     print("ADD BIG MKT CAP")
     coinlist = config["ticker"]["currency"]
     toplist = 7
@@ -717,8 +727,10 @@ def getcoinsbymktcap(config):
     coins, connectfail = getgecko(geckourl)
     #logging.debug(coins)
     if connectfail == False:
-        #   Cycle must be true if trending mode is on
+        # Cycle must be true if trending mode is on
         config["display"]["cycle"] = True
+        count = 0
+        max_count = int(config["display"]["rankingmodenumber"])
         for coin in coins:
             coin_id = str(coin["id"])
             if coin_id not in coinlist:
@@ -726,8 +738,15 @@ def getcoinsbymktcap(config):
                     coinlist += coin_id
                 else:
                     coinlist += "," + coin_id
+                print(coin_id)
+            count += 1
+            if count >= max_count:
+                break
         config["ticker"]["currency"] = coinlist
+        config["display"]["rankingmodenumber"] = str(count)
     return config
+
+
 
 def setupdisplay(config):
     print("SETUP DISPLAY")
@@ -1053,58 +1072,69 @@ def main():
 
         # SETUP DISPLAY
         config = setupdisplay(config)
-        
-        config['display']['orientation']=int(config['display']['orientation'])
+
+        config["display"]["orientation"] = int(config["display"]["orientation"])
         if config["ticker"]["currency"] is None or config["ticker"]["currency"] == "none":
             config["ticker"]["currency"] = ""
-        staticcoins=config['ticker']['currency']
-#       Get the buttons for 2.7in EPD set up
-        thekeys=initkeys()
-#       Add key events
-        addkeyevent(thekeys)
-#       Note how many coins in original config file
-        howmanycoins=len(config['ticker']['currency'].split(","))
-#       Note that there has been no data pull yet
-        datapulled=False
-#       Time of start
+        staticcoins = config["ticker"]["currency"]
+        # Get the buttons for 2.7in EPD set up
+        # thekeys=initkeys()
+        # Add key events
+        # addkeyevent(thekeys)
+        # Note how many coins in original config file
+        static_num = len(config["ticker"]["currency"].split(","))
+        # Note that there has been no data pull yet
+        datapulled = False
+        # Time of start
         lastcoinfetch = time.time()
-#       Quick Sanity check on update frequency, waveshare says no faster than 180 seconds, but we'll make 60 the lower limit
-        if float(config['ticker']['updatefrequency'])<60:
+        # Quick Sanity check on update frequency, waveshare says no faster than 180 seconds, but we'll make 60 the lower limit
+        if float(config["ticker"]["updatefrequency"]) < 60:
             logging.info("Throttling update frequency to 60 seconds")
-            updatefrequency=60.0
+            updatefrequency = 60.0
         else:
-            updatefrequency=float(config['ticker']['updatefrequency'])
-        while internet() ==False:
+            updatefrequency = float(config["ticker"]["updatefrequency"])
+        while internet() == False:
             logging.info("Waiting for internet")
+        ranking_num = 0
+        trending_num = 0
         while True:
-            if config['display']['trendingmode']==True:
-                # The hard-coded 7 is for the number of trending coins to show. Consider revising
-                if (time.time() - lastcoinfetch > (7+howmanycoins)*updatefrequency) or (datapulled==False):
+            # The hard-coded 7 is for the number of trending coins to show. Consider revising
+            if (time.time() - lastcoinfetch > (ranking_num + trending_num + static_num) * updatefrequency) or (datapulled==False):
+                if config['display']['rankingmode']==True:
                     # Reset coin list to static (non trending coins from config file)
                     config['ticker']['currency']=staticcoins
-                    config = getcoinsbymktcap(config)
+                    config = getranking(config)
+                    ranking_num = int(config["display"]["rankingmodenumber"])
+                if config['display']['trendingmode']==True:
+                    # Reset coin list to static (non trending coins from config file)
+                    if config['display']['rankingmode']!=True:
+                        config['ticker']['currency']=staticcoins
                     config = gettrending(config)
-            if (time.time() - lastcoinfetch > updatefrequency) or (datapulled==False):
-                if config['display']['cycle']==True and (datapulled==True):
-                    crypto_list = currencycycle(config['ticker']['currency'])
-                    config['ticker']['currency']=",".join(crypto_list)
+                    trending_num = int(config["display"]["trendingmodenumber"])
+
+            if (time.time() - lastcoinfetch > updatefrequency) or (datapulled == False):
+                if config["display"]["cycle"] == True and (datapulled == True):
+                    crypto_list = currencycycle(config["ticker"]["currency"])
+                    config["ticker"]["currency"] = ",".join(crypto_list)
                     # configwrite(config)
-                lastcoinfetch=fullupdate(config,lastcoinfetch)
+                lastcoinfetch = fullupdate(config, lastcoinfetch)
                 datapulled = True
-#           Reduces CPU load during that while loop
+
+            # Reduces CPU load during that while loop
             time.sleep(0.01)
+
     except IOError as e:
         logging.error(e)
-        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
-        display_image(image,image)
+        image = beanaproblem(str(e) + " Line: " + str(e.__traceback__.tb_lineno))
+        display_image(image, image)
     except Exception as e:
         logging.error(e)
-        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
-        display_image(image,image)  
-    except KeyboardInterrupt:    
+        image = beanaproblem(str(e) + " Line: " + str(e.__traceback__.tb_lineno))
+        display_image(image, image)
+    except KeyboardInterrupt:
         logging.info("ctrl + c:")
-        image=beanaproblem("Keyboard Interrupt")
-        display_image(image,image)
+        image = beanaproblem("Keyboard Interrupt")
+        display_image(image, image)
         epdd.epdconfig.module_exit()
         GPIO.cleanup()
         exit()

@@ -9,6 +9,9 @@ display:
   showip: true
   disptype: 3in7
   layout: 4
+  rankingmode: true
+  trendingmodenumber: 5
+  rankingmodenumber: 5
 ticker:
   currency2: bitcoin
   currency3: bitcoin,ethereum,dogecoin,shiba-inu,litecoin,cardano,gala,pancakeswap
