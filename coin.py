@@ -290,6 +290,7 @@ def getDatas(config, whichcoin, fiat, other):
                     else:
                         other["ATH"] = False
                     days_ago = 7 # By default sparkline from api
+                    other["days_ago"] = days_ago
                     logging.debug("Got price for the last " + str(days_ago) + " days from CoinGecko")
                     timeseriesstack = liveprice["sparkline_in_7d"]["price"]
                     timeseriesstack.append(pricenow)
@@ -323,7 +324,7 @@ def beanaproblem(message):
     return image
 
 
-def makeSpark(pricestack, whichcoin, fiat):
+def makeSpark(pricestack, whichcoin):
     # Draw and save the sparkline that represents historical data
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)
     themean = sum(pricestack) / float(len(pricestack))
@@ -409,7 +410,7 @@ def updateDisplay(config, other):
     logging.debug(pricestacks)
     logging.debug(others)
 
-    for idx in range(EPD_MLT_NUM):
+    for idx in range(0, len(others)):
         EPD_OFFSET_Y = idx * EPD_MLT_ROW_Y
 
         whichcoin = whichcoins[idx]
@@ -419,7 +420,9 @@ def updateDisplay(config, other):
         whichcoin = others[idx]["id"]
         pricestack = pricestacks[idx]
         other = others[idx]
-        makeSpark(pricestack, whichcoin, fiat)
+        makeSpark(pricestack, whichcoin)
+
+        config['ticker']['sparklinedays'] = other["days_ago"]
 
         # with open(configfile) as f:
         #    originalconfig = yaml.load(f, Loader=yaml.FullLoader)
@@ -797,6 +800,19 @@ def configtocoinandfiat(config, idx=0):
 
 def gettrending(config):
     print("ADD TRENDING")
+    coinlist = config["ticker"]["currency"]
+    url = "https://api.coingecko.com/api/v3/search/trending"
+    #   Cycle must be true if trending mode is on
+    config["display"]["cycle"] = True
+    trendingcoins = requests.get(url, headers=headers).json()
+    for i in range(0, (len(trendingcoins["coins"]))):
+        print(trendingcoins["coins"][i]["item"]["id"])
+        coinlist += "," + str(trendingcoins["coins"][i]["item"]["id"])
+    config["ticker"]["currency"] = coinlist
+    return config
+
+def getmktcaplist(config):
+    print("ADD BIG MKT CAP")
     coinlist = config["ticker"]["currency"]
     url = "https://api.coingecko.com/api/v3/search/trending"
     #   Cycle must be true if trending mode is on
