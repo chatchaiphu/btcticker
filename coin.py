@@ -407,8 +407,8 @@ def updateDisplay(config, other):
 
     fiat = faits[0]
     pricestacks, others = getDatas(config, coins, fiat, other)
-    logging.debug(pricestacks)
-    logging.debug(others)
+    #logging.debug(pricestacks)
+    #logging.debug(others)
 
     for idx in range(0, len(others)):
         EPD_OFFSET_Y = idx * EPD_MLT_ROW_Y
@@ -811,17 +811,25 @@ def gettrending(config):
     config["ticker"]["currency"] = coinlist
     return config
 
-def getmktcaplist(config):
+def getcoinsbymktcap(config):
     print("ADD BIG MKT CAP")
     coinlist = config["ticker"]["currency"]
-    url = "https://api.coingecko.com/api/v3/search/trending"
-    #   Cycle must be true if trending mode is on
-    config["display"]["cycle"] = True
-    trendingcoins = requests.get(url, headers=headers).json()
-    for i in range(0, (len(trendingcoins["coins"]))):
-        print(trendingcoins["coins"][i]["item"]["id"])
-        coinlist += "," + str(trendingcoins["coins"][i]["item"]["id"])
-    config["ticker"]["currency"] = coinlist
+    toplist = 7
+    geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=" + str(toplist) + "&page=1&sparkline=false&locale=en"
+    logging.debug(geckourl)
+    coins, connectfail = getgecko(geckourl)
+    #logging.debug(coins)
+    if connectfail == False:
+        #   Cycle must be true if trending mode is on
+        config["display"]["cycle"] = True
+        for coin in coins:
+            coin_id = str(coin["id"])
+            if coin_id not in coinlist:
+                if coinlist == "":
+                    coinlist += coin_id
+                else:
+                    coinlist += "," + coin_id
+        config["ticker"]["currency"] = coinlist
     return config
 
 
@@ -1159,7 +1167,7 @@ def main():
         logging.info("Timezone Not Set")
     try:
         logging.info("epd BTC Frame")
-        #       Get the configuration from config.yaml
+        # Get the configuration from config.yaml
         with open(configfile) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         logging.info(config)
@@ -1168,18 +1176,20 @@ def main():
         config = setupdisplay(config)
 
         config["display"]["orientation"] = int(config["display"]["orientation"])
+        if config["ticker"]["currency"] is None or config["ticker"]["currency"] == "none":
+            config["ticker"]["currency"] = ""
         staticcoins = config["ticker"]["currency"]
-        #       Get the buttons for 2.7in EPD set up
+        # Get the buttons for 2.7in EPD set up
         # thekeys=initkeys()
-        #       Add key events
+        # Add key events
         # addkeyevent(thekeys)
-        #       Note how many coins in original config file
+        # Note how many coins in original config file
         howmanycoins = len(config["ticker"]["currency"].split(","))
-        #       Note that there has been no data pull yet
+        # Note that there has been no data pull yet
         datapulled = False
-        #       Time of start
+        # Time of start
         lastcoinfetch = time.time()
-        #       Quick Sanity check on update frequency, waveshare says no faster than 180 seconds, but we'll make 60 the lower limit
+        # Quick Sanity check on update frequency, waveshare says no faster than 180 seconds, but we'll make 60 the lower limit
         if float(config["ticker"]["updatefrequency"]) < 60:
             logging.info("Throttling update frequency to 60 seconds")
             updatefrequency = 60.0
@@ -1195,6 +1205,7 @@ def main():
                 ) or (datapulled == False):
                     # Reset coin list to static (non trending coins from config file)
                     config["ticker"]["currency"] = staticcoins
+                    config = getcoinsbymktcap(config)
                     config = gettrending(config)
             if (time.time() - lastcoinfetch > updatefrequency) or (datapulled == False):
                 if config["display"]["cycle"] == True and (datapulled == True):

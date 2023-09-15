@@ -377,8 +377,8 @@ def updateDisplay(config, other):
     fiat = faits[0]
     pricestacks, others = getDatas(config, coins, fiat, other)
 
-    logging.debug(pricestacks)
-    logging.debug(others)
+    #logging.debug(pricestacks)
+    #logging.debug(others)
 
     for idx in range(0, len(others)):
         whichcoin = whichcoins[idx]
@@ -708,6 +708,27 @@ def gettrending(config):
     config['ticker']['currency']=coinlist
     return config
 
+def getcoinsbymktcap(config):
+    print("ADD BIG MKT CAP")
+    coinlist = config["ticker"]["currency"]
+    toplist = 7
+    geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=" + str(toplist) + "&page=1&sparkline=false&locale=en"
+    logging.debug(geckourl)
+    coins, connectfail = getgecko(geckourl)
+    #logging.debug(coins)
+    if connectfail == False:
+        #   Cycle must be true if trending mode is on
+        config["display"]["cycle"] = True
+        for coin in coins:
+            coin_id = str(coin["id"])
+            if coin_id not in coinlist:
+                if coinlist == "":
+                    coinlist += coin_id
+                else:
+                    coinlist += "," + coin_id
+        config["ticker"]["currency"] = coinlist
+    return config
+
 def setupdisplay(config):
     print("SETUP DISPLAY")
     global EPD_DISP_TYPE
@@ -1034,6 +1055,8 @@ def main():
         config = setupdisplay(config)
         
         config['display']['orientation']=int(config['display']['orientation'])
+        if config["ticker"]["currency"] is None or config["ticker"]["currency"] == "none":
+            config["ticker"]["currency"] = ""
         staticcoins=config['ticker']['currency']
 #       Get the buttons for 2.7in EPD set up
         thekeys=initkeys()
@@ -1059,7 +1082,8 @@ def main():
                 if (time.time() - lastcoinfetch > (7+howmanycoins)*updatefrequency) or (datapulled==False):
                     # Reset coin list to static (non trending coins from config file)
                     config['ticker']['currency']=staticcoins
-                    config=gettrending(config)
+                    config = getcoinsbymktcap(config)
+                    config = gettrending(config)
             if (time.time() - lastcoinfetch > updatefrequency) or (datapulled==False):
                 if config['display']['cycle']==True and (datapulled==True):
                     crypto_list = currencycycle(config['ticker']['currency'])
