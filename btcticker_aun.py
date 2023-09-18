@@ -304,7 +304,7 @@ def makeSpark(pricestack, whichcoin):
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)
     themean= sum(pricestack)/float(len(pricestack))
     x = [xx - themean for xx in pricestack]
-    fig, ax = plt.subplots(1,1,figsize=(10,3))
+    fig, ax = plt.subplots(1,1,figsize=(EPD_SPARK_WIDTH, EPD_SPARK_HEIGHT))
     plt.plot(x, color='k', linewidth=6)
     plt.plot(len(x)-1, x[-1], color='r', marker='o')
     # Remove the Y axis
@@ -510,10 +510,14 @@ def updateDisplay(config, other):
                 #draw2.text((EPD_NAME_X + w, EPD_NAME_Y + EPD_OFFSET_Y), "(" + str("%d" % other['market_cap_rank']) + ")", font=font_date, fill = 0)
                 #w, h = draw.textsize("(" + str("%d" % other['market_cap_rank']) + ")", font=font_tail)
                 #draw2.text((EPD_RANK_X, EPD_RANK_Y + EPD_OFFSET_Y - h), "(" + str("%d" % other['market_cap_rank']) + ")", font=font_tail, fill = 0)
+                #if EPD_COLOR_NUM==2:
+                #    drawtextalign(draw2, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
+                #else:
+                #    drawtextalign(draw, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
                 if EPD_COLOR_NUM==2:
-                    drawtextalign(draw2, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
+                    drawtextalign(draw2, other['name'][0:9] + " [" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
                 else:
-                    drawtextalign(draw, whichcoin[0:9] + "[" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
+                    drawtextalign(draw, other['name'][0:9] + " [" + str("%d" % other['market_cap_rank']) + "]", EPD_NAME_X, EPD_NAME_Y+EPD_OFFSET_Y, EPD_NAME_W, font=font_tail, fill=0, align=EPD_NAME_A)
 
             #draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
 
@@ -793,6 +797,8 @@ def setupdisplay(config):
     global font_info_name
     global font_vol
     global EPD_COLOR_NUM
+    global EPD_SPARK_WIDTH
+    global EPD_SPARK_HEIGHT
 
     EPD_DISP_TYPE = config['display']['disptype']
     EPD_DISP_LAYOUT = config['display']['layout']
@@ -846,6 +852,8 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 0
         EPD_MLT_NUM = 1
         EPD_COLOR_NUM = 2
+        EPD_SPARK_WIDTH = 10
+        EPD_SPARK_HEIGHT = 3
     ######### 2.7 2-Rows ########
     elif EPD_DISP_LAYOUT== 2:
         LAY_A = round(EPD_WIDTH*1/4)
@@ -883,6 +891,8 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 80
         EPD_MLT_NUM = 2
         EPD_COLOR_NUM = 2
+        EPD_SPARK_WIDTH = 10
+        EPD_SPARK_HEIGHT = 3
     ########## 2.7 Portait 3-Rows ########
     elif EPD_DISP_LAYOUT== 3:
         config['display']['orientation'] = 0
@@ -923,6 +933,8 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 85
         EPD_MLT_NUM = 3
         EPD_COLOR_NUM = 2
+        EPD_SPARK_WIDTH = 10
+        EPD_SPARK_HEIGHT = 3
     ########## 3.7 Portait 5-Rows ########
     elif EPD_DISP_LAYOUT== 4:
         config['display']['orientation'] = 0
@@ -963,14 +975,16 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 95
         EPD_MLT_NUM = 5
         EPD_COLOR_NUM = 1
+        EPD_SPARK_WIDTH = 10
+        EPD_SPARK_HEIGHT = 3
     ########## 3.7 Landscape 2-Rows ########
     elif EPD_DISP_LAYOUT== 5:
         config['display']['orientation'] = 90
         #config['display']['showvolume'] = False
         #config['display']['showrank'] = False
-        LAY_A = round(EPD_WIDTH*1/3)
-        LAY_B = round(EPD_WIDTH*2/3)
-        LAY_C = round(EPD_WIDTH*0/3)
+        LAY_A = round(EPD_WIDTH*1/6)
+        LAY_B = round(EPD_WIDTH*5/6)
+        LAY_C = round(EPD_WIDTH*0/4)
         EPD_TIME_Y    = 0
         EPD_IP_Y     = EPD_HEIGHT
         FONT_DATE_SIZE = 18
@@ -995,6 +1009,48 @@ def setupdisplay(config):
         EPD_VOL_A   = 'R'
         LAYOUT_ICON_W = 90
         LAYOUT_ICON_H = 90
+        EPD_PRICE_X  = -40
+        EPD_PRICE_Y  = -60
+        FONT_PRICE_SIZE = 41
+        FONT_PRICE_REDUCE = 2
+        FONT_VOL_SIZE  = 15
+        EPD_MLT_ROW_Y = 95
+        EPD_MLT_NUM = 3
+        EPD_COLOR_NUM = 1
+        EPD_SPARK_WIDTH = 12
+        EPD_SPARK_HEIGHT = 3
+     ########## 3.7 Landscape 2-Rows ########
+    elif EPD_DISP_LAYOUT== 6:
+        config['display']['orientation'] = 90
+        #config['display']['showvolume'] = False
+        #config['display']['showrank'] = False
+        LAY_A = round(EPD_WIDTH*1/6)
+        LAY_B = round(EPD_WIDTH*2/6)
+        LAY_C = round(EPD_WIDTH*4/6)
+        EPD_TIME_Y    = 0
+        EPD_IP_Y     = EPD_HEIGHT
+        FONT_DATE_SIZE = 18
+        FONT_TAIL_SIZE = 10
+        EPD_NAME_X   = 0
+        EPD_NAME_Y   = 0
+        EPD_NAME_W   = LAY_A
+        EPD_NAME_A   = 'L'
+        EPD_RANK_X   = 0
+        EPD_RANK_Y   = 8
+        EPD_SPARK_X   = LAY_C + 10
+        EPD_SPARK_Y   = 5
+        EPD_ICON_X   = 0
+        EPD_ICON_Y   = 5
+        EPD_DAY_X   = LAY_A
+        EPD_DAY_Y   = 20
+        EPD_DAY_W   = LAY_A * 3
+        EPD_DAY_A   = 'R'
+        EPD_VOL_X   = LAY_A
+        EPD_VOL_Y   = 35
+        EPD_VOL_W   = LAY_A * 3
+        EPD_VOL_A   = 'R'
+        LAYOUT_ICON_W = 90
+        LAYOUT_ICON_H = 90
         EPD_PRICE_X  = 0
         EPD_PRICE_Y  = -60
         FONT_PRICE_SIZE = 41
@@ -1003,6 +1059,8 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 95
         EPD_MLT_NUM = 3
         EPD_COLOR_NUM = 1
+        EPD_SPARK_WIDTH = 10
+        EPD_SPARK_HEIGHT = 5
      ######### 2.7 ########
     else :
         LAY_A = round(EPD_WIDTH*1/3)
@@ -1040,6 +1098,8 @@ def setupdisplay(config):
         EPD_MLT_ROW_Y = 0
         EPD_MLT_NUM = 1
         EPD_COLOR_NUM = 2
+        EPD_SPARK_WIDTH = 10
+        EPD_SPARK_HEIGHT = 3
     ######################
 
     font_info_name = "whitrabt"
