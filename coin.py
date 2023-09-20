@@ -271,6 +271,7 @@ def getDatas(config, whichcoin, fiat, other):
 
                 for i in range(0, len_rawlivecoin):
                     liveprice = rawlivecoin[i]
+                    logging.debug(liveprice)
                     pricenow = float(liveprice["current_price"])
                     alltimehigh = float(liveprice["ath"])
                     # Quick workaround for error being thrown for obscure coins. TO DO: Examine further
@@ -291,6 +292,12 @@ def getDatas(config, whichcoin, fiat, other):
                         other["ATH"] = False
                     days_ago = 7 # By default sparkline from api
                     other["days_ago"] = days_ago
+                    ################
+                    # get more infos
+                    other["high_24h"] = liveprice["high_24h"]
+                    other["low_24h"] = liveprice["low_24h"]
+                    other["price_change_percentage_24h"] = liveprice["price_change_percentage_24h"]
+                    ################
                     logging.debug("Got price for the last " + str(days_ago) + " days from CoinGecko")
                     timeseriesstack = liveprice["sparkline_in_7d"]["price"]
                     timeseriesstack.append(pricenow)

@@ -272,6 +272,12 @@ def getDatas(config, whichcoin, fiat, other):
                         other["ATH"] = False
                     days_ago = 7 # By default sparkline from api
                     other["days_ago"] = days_ago
+                    ################
+                    # get more infos
+                    other["high_24h"] = liveprice["high_24h"]
+                    other["low_24h"] = liveprice["low_24h"]
+                    other["price_change_percentage_24h"] = liveprice["price_change_percentage_24h"]
+                    ################
                     logging.debug("Got price for the last " + str(days_ago) + " days from CoinGecko")
                     timeseriesstack = liveprice["sparkline_in_7d"]["price"]
                     timeseriesstack.append(pricenow)
@@ -498,7 +504,8 @@ def updateDisplay(config, other):
             drawtextalign(draw, str(days_ago)+" day : "+pricechange, EPD_DAY_X, EPD_DAY_Y+EPD_OFFSET_Y, EPD_DAY_W, font=font_vol, fill=0, align=EPD_DAY_A)
 
             if 'showvolume' in config['display'] and config['display']['showvolume']:
-                drawtextalign(draw, "24h vol : " + human_format(other['volume']), EPD_VOL_X, EPD_VOL_Y+EPD_OFFSET_Y, EPD_VOL_W, font=font_vol, fill=0, align=EPD_DAY_A)
+                #drawtextalign(draw, "24h vol : " + human_format(other['volume']), EPD_VOL_X, EPD_VOL_Y+EPD_OFFSET_Y, EPD_VOL_W, font=font_vol, fill=0, align=EPD_DAY_A)
+                drawtextalign(draw, "24h V: " + human_format(other['volume']) + "H: " + human_format(other['high_24h'])+ "L: " + human_format(other['low_24h']), EPD_VOL_X, EPD_VOL_Y+EPD_OFFSET_Y, EPD_VOL_W, font=font_vol, fill=0, align=EPD_DAY_A)
 
             writewrappedlines(image, pricestring, FONT_PRICE_SIZE-fontreduce, EPD_PRICE_X, EPD_PRICE_Y + EPD_OFFSET_Y, 8, 15, font_info_name)
 
